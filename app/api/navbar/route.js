@@ -6,7 +6,7 @@ export async function GET() {
   try {
     // Access the cookies
     const cookieStore = await cookies();
-    const token = cookieStore.get('passwordManager')?.value;
+    const token = cookieStore.get('token')?.value;
 
     // If no token is found, return unauthorized response
     if (!token) {

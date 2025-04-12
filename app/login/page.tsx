@@ -10,7 +10,8 @@ const page = () => {
     const [password , setpassword] = useState("");
     const [serverMessage, setMessage] = useState();
 
-    const handleLogin = async () =>{
+    const handleLogin = async (e) =>{
+        e.preventDefault()
         const response = await fetch("/api/login",{
             method: "POST",
             headers:{

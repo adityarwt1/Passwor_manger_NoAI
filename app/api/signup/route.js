@@ -5,57 +5,13 @@ import { NextResponse } from "next/server";
 import { cookies } from 'next/headers'
 import jwt from 'jsonwebtoken'
 
-
 /// for logging the user
-export async function GET(req) {
-
-  try {
-    /// getting username and passsword and find in db
-    const { username, password } = await req.json();
-    const user = await User.findOne({ username })
-    if (user.password !== password) {
-      return NextResponse.json({ message: "Incorrect Password" })
-    }
-    /// making payload to set intothe token
-    if (user) {
-      const userdataPayload = {
-        id: user._id,
-        username: user.username,
-        email: user.email,
-        plateform: user.plateform,
-        password: user.password,
-      }
-      const token = jwt.sign(userdataPayload,process.env.JWT_SECRET,{
-        expiresIn:"7d"
-      })
-
-      ;(await cookies()).set("passwordManager", token,{
-        httpOnly: true,
-        secure:true,
-        sameSite:"strict",
-        path: "/",
-        maxAge: 7 * 24 * 60 * 60 
-      })
-
-
-      
-      
-
-    }
-
-  } catch (error) {
-
-  }
-
-}
-
 
 export async function POST(req) {
 
   try {
     await connectDB();
     const { username, email, password } = await req.json();
-
 
     /// trying user exist or not  
     const existingUser = await User.findOne({
@@ -68,7 +24,6 @@ export async function POST(req) {
 
     const user = new User({ username, email, password });
     await user.save();
-
 
     // making pay load for saving the data
     const tokenPayload = {
@@ -84,7 +39,7 @@ export async function POST(req) {
     })
 
     //asign ito the   cookie
-    cookies().set("passwordManager", token, {
+    cookies().set("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
@@ -92,15 +47,12 @@ export async function POST(req) {
       maxAge: 7 * 24 * 60 * 60
     })
 
-
-
     return NextResponse.json({ success: true, data: user }, { status: 201 })
   }
   catch (error) {
-    console.log("User already exist");
     return NextResponse.json({
       success: false,
-      data: "User already exist of server Error"
+      data: `user alredy exist you should login`
     }, { status: 500 })
 
   }
@@ -110,7 +62,7 @@ export async function POST(req) {
 export async function DELETE() {
 
   try {
-    (await cookies()).delete("passwordManager")
+    (await cookies()).delete("token")
 
     return NextResponse.json({ success: true, message: "Cokie deleted successfully" })
   }

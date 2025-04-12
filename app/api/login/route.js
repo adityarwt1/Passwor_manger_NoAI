@@ -2,6 +2,7 @@ import User from '@/models/User.js';
 import jwt from 'jsonwebtoken';
 import { NextResponse } from 'next/server';
 import connectDB from "@/lib/mongodb";
+import { cookies } from 'next/headers';
 
 export async function POST(req) {
 
@@ -26,7 +27,7 @@ export async function POST(req) {
                 expiresIn: "7d"
             })
 
-                (await cookies()).set("passwordManager", token, {
+                (await cookies()).set("token", token, {
                     httpOnly: true,
                     secure: true,
                     sameSite: "strict",
@@ -34,7 +35,7 @@ export async function POST(req) {
                     maxAge: 7 * 24 * 60 * 60
                 })
         
-        return NextResponse.json({success: true , messsage: "user login successfully"}, {status: 200})
+        return NextResponse.json({success: true , message: "user login successfully"}, {status: 200})
 
     } catch (error) {
         return NextResponse.json({message:"internal sever error"}, {status: 500})
