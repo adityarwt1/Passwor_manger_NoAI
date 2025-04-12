@@ -1,7 +1,12 @@
+"use client"
 import Link from 'next/link'
-import React from 'react'
+import React, { useState } from 'react'
 
-const navbar = () => {
+const navbar = async () => {
+
+  // variable declare 
+  const [isLoggedIn, setisLoggedIn] = useState(false)
+
   return (
     <div className='flex shadow-md p-3  items-center justify-around '>
       <div className='w-1/2'>
