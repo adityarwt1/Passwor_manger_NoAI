@@ -22,15 +22,28 @@ const Navbar = () => {
       console.log("User data:", extractedData); // Log the extracted data directly
     }
   }
-  const handleSignInLogout = async ()=>{
-    if(isLoggedIn){
-      router.push("/logout")
+
+  /// handling sign in and sign out
+  const handleSignInLogout = async () => {
+    if (isLoggedIn) {
+      const response = await fetch("api/signup", {
+        method: "DELETE"
+      })
+      if (response.ok)
+        setisLoggedIn(false)
+      setUserdata(null)
+      router.push("/")
     }
-    else{
+    else {
       router.push("/signup")
     }
   }
 
+  /// redirecting to login page
+
+  const pushToLoginPage = ()=>{
+    router.push("/login")
+  }
   useEffect(() => {
     gettingVerification()
   }, [])
@@ -47,7 +60,7 @@ const Navbar = () => {
         <Link href="/help" className='px-4 py-2 border-gray-500 rounded-md mx-4 shadow-sm duration-300 hover:scale-95 hover:bg-zinc-950 hover:text-white'>Help & Support</Link>
       </div>
       <div className='flex justify-end mx-2 items-center w-1/2'>
-        <button onClick={handleSignInLogout} className='bg-zinc-950 hover:scale-95 duration-300 text-white p-2 rounded-md'>{isLoggedIn? `Logout`: `Sign-UP`}</button>
+        {isLoggedIn ? <button onClick={handleSignInLogout} className='bg-zinc-950 hover:scale-95 duration-300 text-white p-2 rounded-md'>Logout</button>: <button onClick={pushToLoginPage} className='bg-zinc-950 hover:scale-95 duration-300 text-white p-2 rounded-md'>Login</button> }
       </div>
     </div>
   )
