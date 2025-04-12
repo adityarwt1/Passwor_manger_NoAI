@@ -6,11 +6,11 @@ import React from 'react'
 const k = () => {
   return (
     <div className='flex justify-center-safe items-center '>
-<PasswordOverVier/>
-<div>
-<RecentActivity/>
-<SecurityInsight/>
-</div>
+      <PasswordOverVier />
+      <div>
+        <RecentActivity />
+        <SecurityInsight />
+      </div>
     </div>
   )
 }
