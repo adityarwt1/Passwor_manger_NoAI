@@ -48,3 +48,17 @@ export async function POST(req) {
 
   }
 }
+
+
+export async function DELETE() {
+  
+  try{
+    (await cookies()).delete("passwordManager")
+    return NextResponse.json({success:true , message: "Cokie deleted successfully"})
+  }
+  catch(error){
+    return NextResponse.json({success: false, message:"Itana Chutiya Api hai"})
+  }
+
+  
+}

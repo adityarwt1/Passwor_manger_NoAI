@@ -1,22 +1,33 @@
 "use client"
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 
 const Navbar = () => {
   // variable declare 
+  const router = useRouter()
   const [isLoggedIn, setisLoggedIn] = useState(false)
-  const [userdata, setUserdata] = useState({})
+  const [userdata, setUserdata] = useState(null)
 
   // getting token verification from api
   const gettingVerification = async () => {
     const response = await fetch("/api/navbar", {
       method: "GET"
     })
-    const data = await response.json()
-    console.log(data)
-    if (response.ok) {
+    const data = await response.json();
+    if (data.success) {
+      const extractedData = data.data; // Extract user data from response
+      setUserdata(extractedData);
       setisLoggedIn(true)
-      setUserdata(data)
+      console.log("User data:", extractedData); // Log the extracted data directly
+    }
+  }
+  const handleSignInLogout = async ()=>{
+    if(isLoggedIn){
+      router.push("/logout")
+    }
+    else{
+      router.push("/signup")
     }
   }
 
@@ -35,10 +46,8 @@ const Navbar = () => {
         <Link href="/generator" className='px-4 py-2 border-gray-500 rounded-md mx-4 shadow-sm duration-300 hover:scale-95 hover:bg-zinc-950 hover:text-white'>Password Generator</Link>
         <Link href="/help" className='px-4 py-2 border-gray-500 rounded-md mx-4 shadow-sm duration-300 hover:scale-95 hover:bg-zinc-950 hover:text-white'>Help & Support</Link>
       </div>
-      <div className='flex justify-around items-center w-1/2'>
-        <div className='w-10 bg-amber-300 rounded-full h-10 text-center items-center flex justify-center text-white'><span>A</span></div>
-        <div>Setting</div>
-        <Link href="/signup">Sign-Up</Link>
+      <div className='flex justify-end mx-2 items-center w-1/2'>
+        <button onClick={handleSignInLogout} className='bg-zinc-950 hover:scale-95 duration-300 text-white p-2 rounded-md'>{isLoggedIn? `Logout`: `Sign-UP`}</button>
       </div>
     </div>
   )
