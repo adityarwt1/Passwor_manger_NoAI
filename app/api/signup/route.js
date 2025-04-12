@@ -30,6 +30,8 @@ export async function POST(req) {
       id: user._id,
       username: user.username,
       email: user.email,
+      plateform: user.plateform,
+      plateFormPassword: user.plateFormPassword,
 
     }
 
@@ -39,7 +41,7 @@ export async function POST(req) {
     })
 
     //asign ito the   cookie
-    cookies().set("token", token, {
+   (await cookies()).set("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",

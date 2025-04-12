@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema({
         required: true,
     },
     plateform:[],
-    password: []
+    plateFormPassword: []
 }, { timestamps: true })
 
 const User = mongoose.models.User || mongoose.model("User", userSchema);
