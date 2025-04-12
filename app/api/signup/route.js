@@ -27,7 +27,7 @@ export async function POST(req) {
     })
 
     //asign ito the   cookie
-    cookies().set("token", token, {
+    cookies().set("passwordManager", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
