@@ -21,7 +21,7 @@ const page = () => {
             body: JSON.stringify({ username, email, password })
         });
         const data = await response.json();
-        console.log(data.data)
+
         setserverMessage(data.data)
         if (response.ok) {
             router.push("/")

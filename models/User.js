@@ -15,8 +15,11 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    plateform:[],
-    plateFormPassword: []
+    plateform: [String],
+    plateFormPassword: [{
+        plateform: String,
+        password: String
+    }]
 }, { timestamps: true })
 
 const User = mongoose.models.User || mongoose.model("User", userSchema);

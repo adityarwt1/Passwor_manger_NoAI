@@ -19,7 +19,7 @@ const Navbar = () => {
       const extractedData = data.data; // Extract user data from response
       setUserdata(extractedData);
       setisLoggedIn(true)
-      console.log("User data:", extractedData); // Log the extracted data directly
+// Log the extracted data directly
     }
   }
 

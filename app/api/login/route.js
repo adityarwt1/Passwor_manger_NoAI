@@ -15,7 +15,6 @@ export async function POST(req) {
         /// getting username and passsword and find in db
         const { username, password } = await req.json();
         const user = await User.findOne({ username })
-        console.log(user)
 
         if(!user){
             return NextResponse.json({message: " User not found"},{status:404})
