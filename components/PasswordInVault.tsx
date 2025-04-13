@@ -1,12 +1,24 @@
 import React from 'react'
 
-const PasswordInVault = () => {
+interface PasswordInVaultProps {
+  plateform: string;
+  password: string;
+}
+
+const PasswordInVault: React.FC<PasswordInVaultProps> = ({ plateform, password }) => {
   return (
-    <div className='flex justify-between border-t border-b border-zinc-950 m-4 p-2 hover:bg-zinc-950 hover:text-white hover:scale-105 duration-300  '>
-        <div className='mx-2   w-full flex justify-start '>valorant</div>
-        <div className='mx-2   w-full flex justify-end'>............</div>
-        <div className='mx-2   w-full flex justify-end'>:</div>
+    <div className='flex justify-around mt-1 border-t border-b py-2 hover:scale-105 items-center justify-items-center hover:bg-zinc-950 duration-300 hover:text-white'>
+      <div className='flex justify-start w-full'>
+        <div className='mx-4'>{plateform}</div>
       </div>
+      <div className='flex justify-around w-full'>
+        <div className='flex'>
+          <input type="text" readOnly value={password} />
+          <div className='mx-2'>see</div>
+        </div>
+        <div>:</div>
+      </div>
+    </div>
   )
 }
 

@@ -6,8 +6,10 @@ const page = () => {
     const router = useRouter()
     const [plateform, setPlateform]= useState("");
     const [password, setPassword] = useState("")
+    const [disableSubmit, setDisableSubmit] = useState(false)
     const handleSubmit = async (e) => {
         e.preventDefault()
+        setDisableSubmit(true)
         const response = await fetch("/api/add",{
             method:"POST",
             headers: {
@@ -34,6 +36,7 @@ const page = () => {
               placeholder="Enter sitename"
               className="px-4 py-2 bg-zinc-800 border border-zinc-600 rounded-md focus:outline-none focus:ring-2 focus:ring-white"
               onChange={(e)=> setPlateform(e.target.value)}
+              required
             />
           </div>
           <div className="flex flex-col">
@@ -45,11 +48,13 @@ const page = () => {
               placeholder="Enter site password"
               className="px-4 py-2 bg-zinc-800 border border-zinc-600 rounded-md focus:outline-none focus:ring-2 focus:ring-white"
               onChange={(e)=> setPassword(e.target.value)}
+              required
             />
           </div>
           <button
             type="submit"
             className="mt-6 w-full py-2 bg-white text-black font-medium rounded-md hover:bg-zinc-200 transition"
+            disabled={disableSubmit}
           >
             Add
           </button>
