@@ -5,7 +5,7 @@ import connectDB from "@/lib/mongodb";
 import { cookies } from 'next/headers';
 
 export async function POST(req) {
-
+    const cookieStore = await cookies()
     try {
        await connectDB();
         ///checking user already lgin or not 
@@ -33,9 +33,9 @@ export async function POST(req) {
             }
             const token = jwt.sign(userdataPayload, process.env.JWT_SECRET, {
                 expiresIn: "7d"
-            })
+            })  
 
-              (await  cookies()).set("token", token, {
+            cookieStore.set("token", token, {
                     httpOnly: true,
                     secure: process.env.NODE_ENV === "production",
                     sameSite: "strict",
@@ -51,6 +51,7 @@ export async function POST(req) {
         
 
     } catch (error) {
+        console.log(error)
         return NextResponse.json({message:`${error}internal sever error`}, {status: 500})
     }
 
