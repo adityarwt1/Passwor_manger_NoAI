@@ -7,7 +7,7 @@ interface PasswordInVaultProps {
 
 const PasswordInVault: React.FC<PasswordInVaultProps> = ({ plateform, password }) => {
   return (
-    <div className='flex justify-around mt-1 border-t border-b py-2 hover:scale-105 items-center justify-items-center hover:bg-zinc-950 duration-300 hover:text-white'>
+    <div className='flex mt-2 justify-around mt-1 border-t border-b py-2 hover:scale-105 items-center justify-items-center hover:bg-zinc-950 duration-300 hover:text-white'>
       <div className='flex justify-start w-full'>
         <div className='mx-4'>{plateform}</div>
       </div>

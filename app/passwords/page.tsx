@@ -21,21 +21,28 @@ const page = () => {
   }, [])
 
   return (
-    <div className='flex justify-center items-center'>
-      <div className='w-1/2  border  rounded-md m-5 shadow-md'>
-        <div className='flex justify-between border border-gray-200 m-4 p-2 shadow rounded-sm '>
-          <div className='mx-2   w-full flex justify-start '>Platform</div>
-          <div className='mx-2   w-full flex justify-end'>Password</div>
-          <div className='mx-2   w-full flex justify-end'>Option</div>
+    <div className='flex justify-center items-center min-h-screen p-4'>
+      <div className='w-full max-w-4xl border rounded-lg shadow-lg'>
+        <div className='flex justify-between border-b p-4 bg-gray-50 rounded-t-lg'>
+          <div className='w-1/3 font-medium text-gray-700'>Platform</div>
+          <div className='w-1/3 text-center font-medium text-gray-700'>Password</div>
+          <div className='w-1/3 text-right font-medium text-gray-700'>Options</div>
         </div>
         {passwords.length > 0 ? (
-          passwords.map((element) => (
-            <PasswordInVault key={element.plateform} plateform={element.plateform} password={element.password} />
-          ))
+          <div className='divide-y'>
+            {passwords.map((element) => (
+              <PasswordInVault 
+                key={element.plateform} 
+                plateform={element.plateform} 
+                password={element.password} 
+              />
+            ))}
+          </div>
         ) : (
-          <div>Password not found</div>
+          <div className='p-8 text-center text-gray-500'>
+            No passwords found in vault
+          </div>
         )}
-
       </div>
     </div>
   )

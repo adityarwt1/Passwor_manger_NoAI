@@ -5,9 +5,9 @@ import React from 'react'
 
 const k = () => {
   return (
-    <div className='flex justify-center-safe items-center '>
+    <div className='flex flex-col md:flex-row justify-center items-center p-4 gap-4'>
       <PasswordOverVier />
-      <div>
+      <div className='w-full md:w-auto'>
         <RecentActivity />
         <SecurityInsight />
       </div>

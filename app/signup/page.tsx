@@ -30,24 +30,64 @@ const page = () => {
 
     }
     return (
-        <div className='w-full h-screen justify-center  flex-col  flex items-center'>
-            <div className=' rounded-md shadow-xl h-fit text-center  w-1/3'>
-                <div className='text-center w-full text-2xl mt-5'>SignUp</div>
-                <div className='w-full flex items-center justify-center mt-2 mb-2'>
-                    <form onSubmit={handleSubmit} method='POST' className='w-1/2 flex flex-col'>
-                        <label htmlFor="username" className='w-full  text-start'>Username</label>
-                        <input type="text" required name="username" onChange={(e) => setusername(e.target.value)} id="username" className='border rounded-sm px-2 py-1 outline-blue-300 mb-5' placeholder='create username' />
-                        <label htmlFor="email" className='w-full  text-start'>E-mail</label>
-                        <input type="email" required name="email" onChange={(e) => setemail(e.target.value)} id="email" className='border rounded-sm px-2 py-1 outline-blue-300 mb-5' placeholder='enter email adress' />
-                        <label htmlFor="password" className='w-full  text-start'>Password</label>
-                        <input type="password" required name="password" onChange={(e) => setpassword(e.target.value)} id="password" className='border rounded-sm px-2 py-1 outline-blue-300 mb-5' placeholder='enter email adress' />
-                        <input type="submit" name="submit" id="submit" className='bg-zinc-950 text-white rounded-md py-2 mb-5' />
-                        <Link href="/login" className='underline'>Login</Link>
-                        <div className={`p-2 bg-red-400 text-white mb-4 rounded-md ${serverMessage.length <= 0? `hidden`:`visible`}`}>{serverMessage}</div>
-                    </form>
-                </div>
+        <div className='flex w-full min-h-screen items-center justify-center p-4'>
+            <div className='border rounded-lg shadow-lg w-full max-w-md p-6 md:p-8'>
+                <h1 className='text-2xl md:text-3xl font-semibold text-center mb-6'>Sign Up</h1>
+                <form onSubmit={handleSubmit} method='POST' className='flex flex-col space-y-4'>
+                    <div className='flex flex-col'>
+                        <label htmlFor="username" className='text-lg font-medium mb-2'>Username</label>
+                        <input 
+                            type="text" 
+                            required 
+                            name="username" 
+                            onChange={(e) => setusername(e.target.value)} 
+                            id="username" 
+                            className='w-full px-4 py-2 border rounded-md outline-none focus:ring-2 focus:ring-zinc-950 transition duration-200'
+                            placeholder='Create username'
+                        />
+                    </div>
+                    <div className='flex flex-col'>
+                        <label htmlFor="email" className='text-lg font-medium mb-2'>E-mail</label>
+                        <input 
+                            type="email" 
+                            required 
+                            name="email" 
+                            onChange={(e) => setemail(e.target.value)} 
+                            id="email" 
+                            className='w-full px-4 py-2 border rounded-md outline-none focus:ring-2 focus:ring-zinc-950 transition duration-200'
+                            placeholder='Enter email address'
+                        />
+                    </div>
+                    <div className='flex flex-col'>
+                        <label htmlFor="password" className='text-lg font-medium mb-2'>Password</label>
+                        <input 
+                            type="password" 
+                            required 
+                            name="password" 
+                            onChange={(e) => setpassword(e.target.value)} 
+                            id="password" 
+                            className='w-full px-4 py-2 border rounded-md outline-none focus:ring-2 focus:ring-zinc-950 transition duration-200'
+                            placeholder='Enter password'
+                        />
+                    </div>
+                    <button
+                        type="submit"
+                        className='w-full py-3 px-6 bg-zinc-950 text-white rounded-md hover:bg-zinc-800 transition duration-200 mt-4'
+                    >
+                        Sign Up
+                    </button>
+                    <div className='mt-4 text-center'>
+                        <Link href="/login" className='text-zinc-950 hover:underline'>
+                            Already have an account? Login
+                        </Link>
+                    </div>
+                    {serverMessage && (
+                        <div className='p-3 bg-red-400 text-white rounded-md text-center'>
+                            {serverMessage}
+                        </div>
+                    )}
+                </form>
             </div>
-
         </div>
     )
 }

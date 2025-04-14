@@ -2,16 +2,50 @@ import React from 'react'
 
 const page = () => {
     return (
-        <div className='flex justify-center items-center h-screen'>
-            <div className='w-fit px-10 py-5 rouned-md shadow border rounded-md '>
-            <div className='text-center my-2 flex flex-col text-2xl font-bold'>Help & FAQs</div>
-            <form action="" className='flex flex-col w-full  items-center'>
-                <label htmlFor="email" className='text-start text-xl border-b w-full my-1 border-gray-300'>E-mail</label>
-                <input type="email" required name="email" id="email" className='border w-fit rounded o `utline-none px-1' placeholder='enter you email' />
-                <label htmlFor="topic" className='text-start text-xl border-b w-full my-1 border-gray-300'>Topic</label>
-                <textarea name="topic" required className='border px-2 py-1 outline-none     w-full' placeholder='write the topic you want to help....'></textarea>
-                <button type='submit' className='p-2 bg-zinc-950 text-white mt-2 rounded-md px-5'>Submint</button>
-            </form>
+        <div className='flex justify-center items-center min-h-screen p-4'>
+            <div className='w-full max-w-md px-6 py-8 rounded-lg shadow-lg border'>
+                <h2 className='text-center mb-6 text-2xl md:text-3xl font-bold'>Help & FAQs</h2>
+                <form className='flex flex-col w-full gap-4'>
+                    <div className='flex flex-col'>
+                        <label 
+                            htmlFor="email" 
+                            className='text-lg font-medium mb-2'
+                        >
+                            E-mail
+                        </label>
+                        <input 
+                            type="email" 
+                            required 
+                            name="email" 
+                            id="email" 
+                            className='w-full px-4 py-2 border rounded-md outline-none focus:ring-2 focus:ring-zinc-950 transition duration-200' 
+                            placeholder='Enter your email'
+                        />
+                    </div>
+
+                    <div className='flex flex-col'>
+                        <label 
+                            htmlFor="topic" 
+                            className='text-lg font-medium mb-2'
+                        >
+                            Topic
+                        </label>
+                        <textarea 
+                            name="topic" 
+                            required 
+                            rows={4}
+                            className='w-full px-4 py-2 border rounded-md outline-none focus:ring-2 focus:ring-zinc-950 resize-none transition duration-200' 
+                            placeholder='Write the topic you need help with....'
+                        />
+                    </div>
+
+                    <button 
+                        type='submit' 
+                        className='w-full py-3 px-6 bg-zinc-950 text-white rounded-md hover:bg-zinc-800 transition duration-200 mt-2'
+                    >
+                        Submit
+                    </button>
+                </form>
             </div>
         </div>
     )

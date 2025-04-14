@@ -2,7 +2,7 @@ import React from 'react'
 
 const SecurityInsight = () => {
   return (
-    <div className='rounded-lg shadow-lg  w-sm py-5 hover:scale-95 duration-300 mt-2 border border-gray-300 ml-10 px-5'>
+    <div className='rounded-lg shadow-lg w-full md:w-[400px] py-5 hover:scale-95 duration-300 mt-2 border border-gray-300 mx-auto md:ml-10 px-5'>
     <div className='text-center'>Security Insight</div>
     <div className='flex items-center justify-between border-t border-b border-gray-200 py-2  hover:bg-zinc-950 duration-300 hover:text-white'>
        <div className='mx-2'>Two-Step Authentication</div>
