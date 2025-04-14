@@ -1,9 +1,13 @@
 "use client"
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
+import { Copy,  CopyCheckIcon, Eye, EyeOff,  MoreVerticalIcon } from 'lucide-react'
 
 const PasswordOverVier = () => {
-    const [passwords, setpasswords] = useState([{plateform:'aditya' , password:'aditya@2487'}])
+    const [passwords, setpasswords] = useState([]);
+    const [toggle, setToggle] = useState("");
+    const [copy, setCopy] = useState("")
+    console.log(passwords)
     const fetchPassword = async () => {
         try {
             const response = await fetch("/api/fetchPassword", {
@@ -26,11 +30,17 @@ const PasswordOverVier = () => {
         }
     }
     //// checkin the length of the array
-    
-    
+
+
     useEffect(() => {
         fetchPassword()
     }, [])
+
+
+    /// handling for cooy the password
+    const handleCOpyEvent = ()=>{
+
+    }
 
     return (
         <div className='rounded-lg shadow-lg  w-2/6 py-5  duration-300 mt-2 border border-gray-300 ml-10 px-5 hover:scale-95 '>
@@ -45,21 +55,22 @@ const PasswordOverVier = () => {
                         </div>
                         <div className='flex justify-around w-full'>
                             <div className='flex'>
-                                <input type="text" readOnly value={arrayElement.password} />
-                                <div className='mx-2'>see</div>
+                                <input type={toggle === arrayElement._id ? `text`: `password`} readOnly value={arrayElement.password}  disabled />
+                                <div className='mx-2' >{toggle === arrayElement._id ? <EyeOff onClick={()=> setToggle("")} />: <Eye onClick={()=> setToggle(arrayElement._id)}/>}</div>
+                                <div className='mx-2' >{copy === arrayElement._id ? <CopyCheckIcon/>: <Copy onClick={()=> {setCopy(arrayElement._id); navigator.clipboard.writeText(arrayElement.password)}}/>}</div>
                             </div>
-                            <div>:</div>
+                            <div><MoreVerticalIcon /> </div>
                         </div>
                     </div>
                 ))
             ) : (
                 <div className='mx-4'>
                     <div className='animate-bounce mt-5 text-center '><Link href="/add" className='border p-2 rounded-md bg-zinc-950 text-white'  >Click here to add password...</Link></div>
-                    
+
                 </div>
             )}
 
-           
+
 
         </div>
 

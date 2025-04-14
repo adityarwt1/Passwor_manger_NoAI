@@ -22,6 +22,9 @@ const Navbar = () => {
 // Log the extracted data directly
     }
   }
+  useEffect(()=>{
+    gettingVerification()
+  },[])
 
   /// handling sign in and sign out
   const handleSignInLogout = async () => {
@@ -53,9 +56,10 @@ const Navbar = () => {
       <div className='w-1/2'>
         Logo
       </div>
-      <div className='flex w-full'>
-       <div className='text-center flex justify-center items-center'> <Link href="/" className='px-4 py-2 border-gray-500 rounded-md mx-4 shadow-sm duration-300 hover:scale-95 hover:bg-zinc-950 hover:text-white'>Dashboard</Link></div>
-        <Link href="/passwords" className='px-4 py-2 border-gray-500 rounded-md mx-4 shadow-sm duration-300 hover:scale-95 hover:bg-zinc-950 hover:text-white'>Password Vault</Link>
+      <div className='flex w-full sm:hidden'>
+       <div className='text-center flex justify-center items-center  '>
+         <Link href="/" className='px-4 py-2 border-gray-500 rounded-md mx-4 shadow-sm duration-300 hover:scale-95 hover:bg-zinc-950 hover:text-white'>Dashboard</Link></div>
+        <Link href="/passwords" className='px-4 py-2 border-gray-500 rounded-md mx-4 shadow-sm duration-300 hover:scale-95 hover:bg-zinc-950 hover:text-white'>Password Vault</Link> 
         <Link href="/generator" className='px-4 py-2 border-gray-500 rounded-md mx-4 shadow-sm duration-300 hover:scale-95 hover:bg-zinc-950 hover:text-white'>Password Generator</Link>
         <Link href="/help" className='px-4 py-2 border-gray-500 rounded-md mx-4 shadow-sm duration-300 hover:scale-95 hover:bg-zinc-950 hover:text-white'>Help & Support</Link>
         <Link href="/add" className='px-4 py-2 border-gray-500 rounded-md mx-4 shadow-sm duration-300 hover:scale-95 hover:bg-zinc-950 hover:text-white'>Add</Link>
