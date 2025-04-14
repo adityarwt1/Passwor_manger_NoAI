@@ -134,24 +134,12 @@ const handlecopy =()=>{
             </select>
           </div>
 
-          <button 
-            onClick={handleGeneratePassword}
-            className='bg-zinc-950 text-white w-full py-2 rounded-md duration-300 hover:scale-105 mt-4'
-          >
-            Generate Password
-          </button>
+          <button onClick={handleGeneratePassword} className='bg-zinc-950 text-white w-full mx-10 mt-2 py-2 rounded-md duration-300 hover:scale-105'>Generate Password</button>
 
-          {showPassword && (
-            <div className='mt-4 p-4 border rounded-md flex items-center justify-between gap-2 break-all'>
-              <span className='flex-1'>{generatedPassword}</span>
-              <button 
-                onClick={handlecopy}
-                className='whitespace-nowrap border px-4 py-1 rounded-md duration-300 hover:bg-zinc-950 hover:text-white'
-              >
-                {copied ? "Copied" : "Copy"}
-              </button>
-            </div>
-          )}
+          <div className={`mt-4 p-2 border rounded w-full text-center ${showPassword ? 'block' : 'hidden'}`}>
+            {generatedPassword}
+            <button onClick={() => navigator.clipboard.writeText(generatedPassword)}>Copy</button>
+          </div>
         </div>
       </div>
     </div>
