@@ -10,6 +10,8 @@ const k = () => {
       <div className='w-full md:w-auto'>
         <RecentActivity />
         <SecurityInsight />
+        <SecurityInsight />
+
       </div>
     </div>
   )
