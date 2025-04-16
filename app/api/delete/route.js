@@ -2,12 +2,14 @@ import User from '@/models/User.js'
 import jwt from 'jsonwebtoken'
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
+import connectDB from '@/lib/mongodb.js'
+import mongoose from 'mongoose';
 export async function DELETE(req) {
     try {
         await connectDB();
 
         // Get the current user from the token
-        const cookieStore = cookies();
+        const cookieStore = await cookies();
         const token = cookieStore.get('token')?.value;
 
         if (!token) {

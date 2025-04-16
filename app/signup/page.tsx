@@ -3,44 +3,54 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
 
-const page = () => {
+const Page = () => {
     const router = useRouter()
-    const [username, setusername] = useState("")
-    const [email, setemail] = useState("");
-    const [password, setpassword] = useState("");
-    const [serverMessage, setserverMessage] = useState("");
+    const [username, setUsername] = useState("")
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [serverMessage, setServerMessage] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
-    /// handle form submit
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const response = await fetch("/api/signup", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ username, email, password })
-        });
-        const data = await response.json();
+        setIsLoading(true);
+        setServerMessage("");
 
-        setserverMessage(data.data)
-        if (response.ok) {
-            router.push("/")
+        try {
+            const response = await fetch("/api/signup", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ username, email, password })
+            });
+            
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || data.data || "Signup failed");
+            }
+
+            router.push("/");
+        } catch (error) {
+            setServerMessage(error.message);
+        } finally {
+            setIsLoading(false);
         }
-
-
     }
+
     return (
         <div className='flex w-full min-h-screen items-center justify-center p-4'>
             <div className='border rounded-lg shadow-lg w-full max-w-md p-6 md:p-8'>
                 <h1 className='text-2xl md:text-3xl font-semibold text-center mb-6'>Sign Up</h1>
-                <form onSubmit={handleSubmit} method='POST' className='flex flex-col space-y-4'>
+                <form onSubmit={handleSubmit} className='flex flex-col space-y-4'>
                     <div className='flex flex-col'>
                         <label htmlFor="username" className='text-lg font-medium mb-2'>Username</label>
                         <input 
                             type="text" 
                             required 
                             name="username" 
-                            onChange={(e) => setusername(e.target.value)} 
+                            onChange={(e) => setUsername(e.target.value)} 
                             id="username" 
                             className='w-full px-4 py-2 border rounded-md outline-none focus:ring-2 focus:ring-zinc-950 transition duration-200'
                             placeholder='Create username'
@@ -52,7 +62,7 @@ const page = () => {
                             type="email" 
                             required 
                             name="email" 
-                            onChange={(e) => setemail(e.target.value)} 
+                            onChange={(e) => setEmail(e.target.value)} 
                             id="email" 
                             className='w-full px-4 py-2 border rounded-md outline-none focus:ring-2 focus:ring-zinc-950 transition duration-200'
                             placeholder='Enter email address'
@@ -64,17 +74,19 @@ const page = () => {
                             type="password" 
                             required 
                             name="password" 
-                            onChange={(e) => setpassword(e.target.value)} 
+                            onChange={(e) => setPassword(e.target.value)} 
                             id="password" 
                             className='w-full px-4 py-2 border rounded-md outline-none focus:ring-2 focus:ring-zinc-950 transition duration-200'
                             placeholder='Enter password'
+                            minLength={4}
                         />
                     </div>
                     <button
                         type="submit"
-                        className='w-full py-3 px-6 bg-zinc-950 text-white rounded-md hover:bg-zinc-800 transition duration-200 mt-4'
+                        disabled={isLoading}
+                        className={`w-full py-3 px-6 bg-zinc-950 text-white rounded-md hover:bg-zinc-800 transition duration-200 mt-4 ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
                     >
-                        Sign Up
+                        {isLoading ? 'Creating account...' : 'Sign Up'}
                     </button>
                     <div className='mt-4 text-center'>
                         <Link href="/login" className='text-zinc-950 hover:underline'>
@@ -92,4 +104,4 @@ const page = () => {
     )
 }
 
-export default page
+export default Page

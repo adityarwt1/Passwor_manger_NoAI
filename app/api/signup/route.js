@@ -5,72 +5,82 @@ import { NextResponse } from "next/server";
 import { cookies } from 'next/headers'
 import jwt from 'jsonwebtoken'
 
-/// for logging the user
-
 export async function POST(req) {
-
   try {
     await connectDB();
     const { username, email, password } = await req.json();
 
-    /// trying user exist or not  
+    if (!username || !email || !password) {
+      return NextResponse.json(
+        { success: false, message: "All fields are required" },
+        { status: 400 }
+      );
+    }
+
+    // Check if user exists
     const existingUser = await User.findOne({
-      Username: username,
-    })
+      $or: [
+        { username: username },
+        { email: email }
+      ]
+    });
 
     if (existingUser) {
-      return NextResponse.json({ success: false, message: "User Already Exist" })
+      return NextResponse.json(
+        { success: false, message: "Username or email already exists" },
+        { status: 409 }
+      );
     }
 
     const user = new User({ username, email, password });
     await user.save();
 
-    // making pay load for saving the data
+    // Create token payload
     const tokenPayload = {
       id: user._id,
       username: user.username,
-      email: user.email,
-      plateform: user.plateform,
-      plateFormPassword: user.plateFormPassword,
-
+      email: user.email
     }
 
-    /// this is creationn not asighnment
     const token = jwt.sign(tokenPayload, process.env.JWT_SECRET, {
       expiresIn: "7d"
-    })
+    });
 
-    //asign ito the   cookie
-   (await cookies()).set("token", token, {
+    // Set cookie
+    cookies().set("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict", 
+      sameSite: "strict",
       path: '/',
       maxAge: 7 * 24 * 60 * 60
-    })
+    });
 
-    return NextResponse.json({ success: true, data: user }, { status: 201 })
-  }
-  catch (error) {
-    return NextResponse.json({
-      success: false,
-      data: `user alredy exist you should login`
-    }, { status: 500 })
+    return NextResponse.json(
+      { success: true, data: user },
+      { status: 201 }
+    );
 
+  } catch (error) {
+    console.error("Signup error:", error);
+    return NextResponse.json(
+      { success: false, message: "Internal server error" },
+      { status: 500 }
+    );
   }
 }
 
-
 export async function DELETE() {
-
   try {
-    (await cookies()).delete("token")
-
-    return NextResponse.json({ success: true, message: "Cokie deleted successfully" })
+    cookies().delete("token");
+    return NextResponse.json(
+      { success: true, message: "Logged out successfully" },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Logout error:", error);
+    return NextResponse.json(
+      { success: false, message: "Logout failed" },
+      { status: 500 }
+    );
   }
-  catch (error) {
-    return NextResponse.json({ success: false, message: "Itana Chutiya Api hai" })
-  }
-
-
 }

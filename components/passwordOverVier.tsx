@@ -92,14 +92,14 @@ const PasswordOverVier = () => {
                                 <div className='mx-2'>{toggle === arrayElement._id ? <EyeOff onClick={() => setToggle("")} /> : <Eye onClick={() => setToggle(arrayElement._id)} />}</div>
                                 <div className='mx-2'>{copy === arrayElement._id ? <CopyCheckIcon /> : <Copy onClick={() => { setCopy(arrayElement._id); navigator.clipboard.writeText(arrayElement.password) }} />}</div>
                             </div>
-                            <div><Delete onClick={() => { setDeletePassword(arrayElement._id); handleDeletePassword() }} /></div>
-                            <div className='ml-2'><Link href={arrayElement._id}><Edit /></Link></div>
                             <div>
                                 <Delete onClick={() => {
                                     setDeletePassword(arrayElement._id);
                                     handleDeletePassword(arrayElement._id); // Pass the ID directly
                                 }} />
                             </div>
+                            <div className='ml-2'><Link href={arrayElement._id}><Edit /></Link></div>
+                            
                         </div>
                     </div>
                 ))
