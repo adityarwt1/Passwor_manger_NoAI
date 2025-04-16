@@ -7,6 +7,7 @@ import jwt from 'jsonwebtoken'
 
 export async function POST(req) {
   try {
+    const cookieStore = await cookies()
     await connectDB();
     const { username, email, password } = await req.json();
 
@@ -47,7 +48,7 @@ export async function POST(req) {
     });
 
     // Set cookie
-    cookies().set("token", token, {
+    cookieStore.set("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
@@ -71,7 +72,7 @@ export async function POST(req) {
 
 export async function DELETE() {
   try {
-    cookies().delete("token");
+    cookieStore.delete("token");
     return NextResponse.json(
       { success: true, message: "Logged out successfully" },
       { status: 200 }
