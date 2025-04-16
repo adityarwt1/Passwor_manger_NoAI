@@ -48,21 +48,28 @@ const PasswordOverVier = () => {
     }
 
     /// delete password
-    const handleDeletePassword = async () => {
-        const response = await fetch("/api/delete", {
+
+    const handleDeletePassword = async (id) => {
+        try {
+          const response = await fetch("/api/delete", {
             method: "DELETE",
             headers: {
-                "Content-Type": "application/json"
+              "Content-Type": "application/json"
             },
-            body: JSON.stringify( deletePassword )
-        })
-        const data = await response.json()
-        if (response.ok) {
-            useEffect(() => {
-                fetchPassword()
-            }, [])
+            body: JSON.stringify({ _id: id }) // Match backend expectation
+          });
+          
+          if (!response.ok) {
+            throw new Error('Failed to delete password');
+          }
+          
+          const data = await response.json();
+          fetchPassword();
+        } catch (error) {
+          console.error("Delete error:", error);
+          // Optionally show error to user
         }
-    }
+      }
     return (
         <div className='rounded-lg shadow-lg w-full md:w-[500px] py-5 duration-300 mt-2 border border-gray-300 mx-auto md:ml-10 px-5 hover:scale-95'>
             <div className='rounded-tr-md rounded-tl-md p-4 border-zinc-950 border hover:bg-zinc-950 text-xl hover:text-white duration-300 text-center'>
@@ -87,6 +94,12 @@ const PasswordOverVier = () => {
                             </div>
                             <div><Delete onClick={() => { setDeletePassword(arrayElement._id); handleDeletePassword() }} /></div>
                             <div className='ml-2'><Link href={arrayElement._id}><Edit /></Link></div>
+                            <div>
+                                <Delete onClick={() => {
+                                    setDeletePassword(arrayElement._id);
+                                    handleDeletePassword(arrayElement._id); // Pass the ID directly
+                                }} />
+                            </div>
                         </div>
                     </div>
                 ))
