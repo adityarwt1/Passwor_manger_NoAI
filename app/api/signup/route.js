@@ -72,6 +72,7 @@ export async function POST(req) {
 
 export async function DELETE() {
   try {
+    const cookieStore = await cookies();
     cookieStore.delete("token");
     return NextResponse.json(
       { success: true, message: "Logged out successfully" },

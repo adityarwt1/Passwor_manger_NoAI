@@ -1,18 +1,25 @@
+"use client"
 import PasswordOverVier from '@/components/passwordOverVier'
-import RecentActivity from '@/components/RecentActivity'
-import SecurityInsight from '@/components/SecurityInsight'
-import React from 'react'
+import { useRouter } from 'next/navigation'
+import React, { useEffect } from 'react'
 
 const k = () => {
-  return (
-    <div className='flex flex-col md:flex-row justify-center items-center p-4 gap-4'>
-      <PasswordOverVier />
-      <div className='w-full md:w-auto'>
-        <RecentActivity />
-        <SecurityInsight />
-        <SecurityInsight />
+  const router = useRouter()
+  const cookieConfirmation = async ()=>{
+    const response = await fetch("/api/cookieconfirmation",{
+      method: "GET"
+    })
+    if (!response.ok){
+      router.push("/login")
+    }
+  }
 
-      </div>
+  useEffect(()=>{
+    cookieConfirmation()
+  },[])
+  return (
+    <div className='flex flex-col justify-center items-center p-4 gap-4'>
+      <PasswordOverVier />
     </div>
   )
 }

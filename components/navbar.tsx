@@ -1,114 +1,210 @@
 "use client"
-import { Menu, X } from 'lucide-react'
+import { Menu, X, User, LogOut, LogIn } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 
 const Navbar = () => {
-  // variable declare 
   const router = useRouter()
-  const [isLoggedIn, setisLoggedIn] = useState(false)
-  const [userdata, setUserdata] = useState(null);
-  const [menu, setMenu] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [userData, setUserData] = useState(null)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
 
-  // getting token verification from api
-  const gettingVerification = async () => {
-    const response = await fetch("/api/navbar", {
-      method: "GET"
-    })
-    const data = await response.json();
-    if (data.success) {
-      const extractedData = data.data; // Extract user data from response
-      setUserdata(extractedData);
-      setisLoggedIn(true)
-      // Log the extracted data directly
-    }
-  }
-  useEffect(() => {
-    gettingVerification()
-  }, [])
-
-  /// handling sign in and sign out
-  const handleSignInLogout = async () => {
-    if (isLoggedIn) {
-      const response = await fetch("api/signup", {
-        method: "DELETE"
+  // Fetch user authentication status
+  const checkAuthStatus = async () => {
+    setIsLoading(true)
+    try {
+      const response = await fetch("/api/navbar", {
+        method: "GET",
+        credentials: 'include'
       })
-      if (response.ok)
-        setisLoggedIn(false)
-      setUserdata(null)
-      router.push("/")
+      const data = await response.json()
+      
+      if (data.success) {
+        setUserData(data.data)
+        setIsLoggedIn(true)
+      }
+    } catch (error) {
+      console.error("Auth check failed:", error)
+    } finally {
+      setIsLoading(false)
     }
-    else {
-      router.push("/signup")
+  }
+useEffect(()=>{
+  checkAuthStatus()
+},[])
+  // Handle user logout
+  const handleLogout = async () => {
+    try {
+      const response = await fetch("/api/signup", {
+        method: "DELETE",
+        credentials: 'include'
+      })
+      
+      if (response.ok) {
+        setIsLoggedIn(false)
+        setUserData(null)
+        router.push("/")
+      }
+    } catch (error) {
+      console.error("Logout failed:", error)
     }
-    setMenu(false) // Close mobile menu after login/logout
+    setMobileMenuOpen(false)
   }
 
-  /// redirecting to login page
-  const pushToLoginPage = () => {
-    router.push("/login")
-    setMenu(false) // Close mobile menu after clicking login
-  }
-  
+  // Navigation items
+  const navItems = [
+    { href: "/", label: "Dashboard" },
+    { href: "/passwords", label: "Password Vault" },
+    { href: "/generator", label: "Password Generator" },
+    { href: "/help", label: "Help & Support" },
+    { href: "/add", label: "Add Password" }
+  ]
+
   useEffect(() => {
-    gettingVerification()
+    checkAuthStatus()
   }, [])
-
-  // Handle navigation click
-  const handleNavClick = () => {
-    setMenu(false)
-  }
 
   return (
-    <div className='w-full'>
-      <div className='flex shadow-md p-3 w-full items-center justify-between'>
-        <div className='w-1/6'>
-          Logo
-        </div>
-        {/* Desktop Navigation */}
-        <div className='hidden md:flex flex-nowrap w-4/6 justify-center space-x-2'>
-          <Link href="/" className='whitespace-nowrap px-3 py-2 active:bg-zinc-950 active:text-white border-gray-500 rounded-md shadow-sm duration-300 hover:scale-95 hover:bg-zinc-950 hover:text-white'>Dashboard</Link>
-          <Link href="/passwords" className='whitespace-nowrap px-3 py-2 active:bg-zinc-950 active:text-white border-gray-500 rounded-md shadow-sm duration-300 hover:scale-95 hover:bg-zinc-950 hover:text-white'>Password Vault</Link>
-          <Link href="/generator" className='whitespace-nowrap px-3 py-2 active:bg-zinc-950 active:text-white border-gray-500 rounded-md shadow-sm duration-300 hover:scale-95 hover:bg-zinc-950 hover:text-white'>Password Generator</Link>
-          <Link href="/help" className='whitespace-nowrap px-3 py-2 active:bg-zinc-950 active:text-white border-gray-500 rounded-md shadow-sm duration-300 hover:scale-95 hover:bg-zinc-950 hover:text-white'>Help & Support</Link>
-          <Link href="/add" className='whitespace-nowrap px-3 py-2 active:bg-zinc-950 active:text-white border-gray-500 rounded-md shadow-sm duration-300 hover:scale-95 hover:bg-zinc-950 hover:text-white'>Add</Link>
-        </div>
+    <header className="w-full bg-white shadow-sm sticky top-0 z-50">
+      <div className="container mx-auto px-4 py-3">
+        <div className="flex items-center justify-between">
+          {/* Logo */}
+          <div className="flex items-center">
+            <Link href="/" className="text-xl font-bold text-zinc-800">
+              <span className="bg-zinc-900 text-white px-3 py-1 rounded">SecuroPass</span>
+            </Link>
+          </div>
 
-        {/* Mobile Navigation */}
-        <div className='md:hidden flex items-center'>
-          <button onClick={() => setMenu(!menu)} className='p-2'>
-            {!menu ? <Menu size={30} /> : <X size={30} />}
-          </button>
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center space-x-1">
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="px-3 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 rounded-md transition-colors duration-200"
+              >
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+
+          {/* User Actions - Desktop */}
+          <div className="hidden md:flex items-center space-x-3">
+            {isLoading ? (
+              <div className="h-8 w-8 rounded-full bg-zinc-200 animate-pulse"></div>
+            ) : isLoggedIn ? (
+              <div className="flex items-center space-x-2">
+                {userData?.email && (
+                  <span className="text-sm text-zinc-600 hidden lg:inline">
+                    {userData.email}
+                  </span>
+                )}
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center space-x-1 px-3 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 rounded-md transition-colors duration-200"
+                  title="Logout"
+                >
+                  <LogOut size={16} />
+                  <span>Logout</span>
+                </button>
+              </div>
+            ) : (
+              <>
+                <button
+                  onClick={() => router.push("/login")}
+                  className="px-3 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 rounded-md transition-colors duration-200"
+                >
+                  Login
+                </button>
+                <button
+                  onClick={() => router.push("/signup")}
+                  className="px-3 py-2 text-sm font-medium text-white bg-zinc-900 hover:bg-zinc-800 rounded-md transition-colors duration-200"
+                >
+                  Sign Up
+                </button>
+              </>
+            )}
+          </div>
+
+          {/* Mobile Menu Button */}
+          <div className="md:hidden">
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="p-2 text-zinc-700 hover:text-zinc-900 focus:outline-none"
+              aria-label="Toggle menu"
+            >
+              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
         </div>
 
         {/* Mobile Menu */}
-        {menu && (
-          <div className='absolute top-16 left-0 right-0 bg-white shadow-lg z-50 md:hidden'>
-            <div className='flex flex-col p-4 space-y-3'>
-              <Link href="/" onClick={handleNavClick} className='whitespace-nowrap px-3 py-2 active:bg-zinc-950 active:text-white border-gray-500 rounded-md shadow-sm duration-300 hover:scale-95 hover:bg-zinc-950 hover:text-white'>Dashboard</Link>
-              <Link href="/passwords" onClick={handleNavClick} className=' whitespace-nowrap px-3 py-2 active:bg-zinc-950 active:text-white border-gray-500 rounded-md shadow-sm duration-300 hover:scale-95 hover:bg-zinc-950 hover:text-white'>Password Vault</Link>
-              <Link href="/generator" onClick={handleNavClick} className='whitespace-nowrap px-3 py-2 active:bg-zinc-950 active:text-white border-gray-500 rounded-md shadow-sm duration-300 hover:scale-95 hover:bg-zinc-950 hover:text-white'>Password Generator</Link>
-              <Link href="/help" onClick={handleNavClick} className='whitespace-nowrap px-3 py-2 active:bg-zinc-950 active:text-white border-gray-500 rounded-md shadow-sm duration-300 hover:scale-95 hover:bg-zinc-950 hover:text-white'>Help & Support</Link>
-              <Link href="/add" onClick={handleNavClick} className='whitespace-nowrap px-3 py-2 active:bg-zinc-950 active:text-white border-gray-500 rounded-md shadow-sm duration-300 hover:scale-95 hover:bg-zinc-950 hover:text-white'>Add</Link>
-              {/* Mobile Login/Logout Button */}
-              {isLoggedIn ? 
-                <button onClick={handleSignInLogout} className='w-full bg-zinc-950 hover:scale-95 duration-300 text-white p-2 rounded-md'>Logout</button> : 
-                <button onClick={pushToLoginPage} className='w-full bg-zinc-950 hover:scale-95 duration-300 text-white p-2 rounded-md'>Login</button>
-              }
+        {mobileMenuOpen && (
+          <div className="md:hidden absolute top-16 left-0 right-0 bg-white shadow-lg border-t border-zinc-100">
+            <div className="px-4 py-3 space-y-2">
+              {navItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block px-3 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 rounded-md transition-colors duration-200"
+                >
+                  {item.label}
+                </Link>
+              ))}
+              
+              <div className="pt-2 border-t border-zinc-100">
+                {isLoading ? (
+                  <div className="h-10 bg-zinc-100 rounded-md animate-pulse"></div>
+                ) : isLoggedIn ? (
+                  <div className="space-y-2">
+                    {userData?.email && (
+                      <div className="flex items-center px-3 py-2 text-sm text-zinc-600">
+                        <User size={16} className="mr-2" />
+                        <span>{userData.email}</span>
+                      </div>
+                    )}
+                    <button
+                      onClick={handleLogout}
+                      className="w-full flex items-center justify-center space-x-2 px-3 py-2 text-sm font-medium text-white bg-zinc-900 hover:bg-zinc-800 rounded-md transition-colors duration-200"
+                    >
+                      <LogOut size={16} />
+                      <span>Logout</span>
+                    </button>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      onClick={() => {
+                        router.push("/login")
+                        setMobileMenuOpen(false)
+                      }}
+                      className="flex items-center justify-center space-x-2 px-3 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 rounded-md transition-colors duration-200"
+                    >
+                      <LogIn size={16} />
+                      <span>Login</span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        router.push("/signup")
+                        setMobileMenuOpen(false)
+                      }}
+                      className="flex items-center justify-center space-x-2 px-3 py-2 text-sm font-medium text-white bg-zinc-900 hover:bg-zinc-800 rounded-md transition-colors duration-200"
+                    >
+                      <User size={16} />
+                      <span>Sign Up</span>
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         )}
-
-        {/* Desktop Login/Logout Button */}
-        <div className='hidden md:flex w-1/6 justify-end'>
-          {isLoggedIn ? 
-            <button onClick={handleSignInLogout} className='bg-zinc-950 hover:scale-95 duration-300 text-white p-2 rounded-md'>Logout</button> : 
-            <button onClick={pushToLoginPage} className='bg-zinc-950 hover:scale-95 duration-300 text-white p-2 rounded-md'>Login</button>
-          }
-        </div>
       </div>
-    </div>
+    </header>
   )
 }
-  export default Navbar;
+
+export default Navbar
