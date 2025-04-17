@@ -1,5 +1,5 @@
 "use client"
-import { Menu, X, User, LogOut, LogIn } from 'lucide-react'
+import { Menu, X, User, LogOut, LogIn, Plus } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
@@ -135,6 +135,8 @@ useEffect(()=>{
           </div>
 
           {/* Mobile Menu Button */}
+          <div className='flex items-center '>
+          <Link href={`/add`} className='md:hidden p-2 mr-4 rounded-md flex bg-zinc-950 text-white'><Plus/> Add</Link>
           <div className="md:hidden">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -144,6 +146,7 @@ useEffect(()=>{
               {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
+        </div>
         </div>
 
         {/* Mobile Menu */}
