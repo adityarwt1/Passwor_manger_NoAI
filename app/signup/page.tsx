@@ -1,7 +1,7 @@
 "use client"
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 const Page = () => {
     const router = useRouter()
@@ -38,6 +38,18 @@ const Page = () => {
             setIsLoading(false);
         }
     }
+    const cookieConfirmation = async ()=>{
+        const response = await fetch("/api/cookieconfirmation",{
+          method: "GET"
+        })
+        if (response.ok){
+          router.push("/")
+        }
+      }
+    
+      useEffect(()=>{
+        cookieConfirmation()
+      },[])
 
     return (
         <div className='flex w-full min-h-screen items-center justify-center p-4'>
