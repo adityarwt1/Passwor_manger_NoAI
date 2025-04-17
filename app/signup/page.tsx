@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const Page = () => {
     const router = useRouter()
@@ -10,6 +11,7 @@ const Page = () => {
     const [password, setPassword] = useState("");
     const [serverMessage, setServerMessage] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -38,18 +40,19 @@ const Page = () => {
             setIsLoading(false);
         }
     }
-    const cookieConfirmation = async ()=>{
-        const response = await fetch("/api/cookieconfirmation",{
-          method: "GET"
+
+    const cookieConfirmation = async () => {
+        const response = await fetch("/api/cookieconfirmation", {
+            method: "GET"
         })
-        if (response.ok){
-          router.push("/")
+        if (response.ok) {
+            router.push("/")
         }
-      }
+    }
     
-      useEffect(()=>{
+    useEffect(() => {
         cookieConfirmation()
-      },[])
+    }, [])
 
     return (
         <div className='flex w-full min-h-screen items-center justify-center p-4'>
@@ -80,18 +83,25 @@ const Page = () => {
                             placeholder='Enter email address'
                         />
                     </div>
-                    <div className='flex flex-col'>
+                    <div className='flex flex-col relative'>
                         <label htmlFor="password" className='text-lg font-medium mb-2'>Password</label>
                         <input 
-                            type="password" 
+                            type={showPassword ? "text" : "password"} 
                             required 
                             name="password" 
                             onChange={(e) => setPassword(e.target.value)} 
                             id="password" 
-                            className='w-full px-4 py-2 border rounded-md outline-none focus:ring-2 focus:ring-zinc-950 transition duration-200'
+                            className='w-full px-4 py-2 border rounded-md outline-none focus:ring-2 focus:ring-zinc-950 transition duration-200 pr-10'
                             placeholder='Enter password'
                             minLength={4}
                         />
+                        <button
+                            type="button"
+                            className="absolute right-3 top-[38px] mt-5  transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                            onClick={() => setShowPassword(!showPassword)}
+                        >
+                            {showPassword ? <FaEyeSlash size={20}  className='text-black'/> : <FaEye size={20} className='text-black'/>}
+                        </button>
                     </div>
                     <button
                         type="submit"
