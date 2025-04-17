@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import { NextResponse } from 'next/server';
 import connectDB from "@/lib/mongodb";
 import { cookies } from 'next/headers';
+import bcrypt from 'bcryptjs';
 
 export async function POST(req) {
     const cookieStore = await cookies()
@@ -15,14 +16,18 @@ export async function POST(req) {
         /// getting username and passsword and find in db
         const { username, password } = await req.json();
         const user = await User.findOne({ username })
+        const decodedPassword = await bcrypt.compare(password, user.password)
+        console.log(decodedPassword)
 
         if(!user){
-            return NextResponse.json({message: " User not found"},{status:404})
+            return NextResponse.json({message: " User not found"},{ status:404})
         }
-        if (user.password !== password) {
+        if (!decodedPassword) {
             return NextResponse.json({ message: "Incorrect Password" },{status:402})
         }
         /// making payload to set intothe token
+
+        if (decodedPassword){
         
             const userdataPayload = {
                 id: user._id,
@@ -49,7 +54,7 @@ export async function POST(req) {
                 }, { status: 200 })
             
         
-
+            }
     } catch (error) {
         console.log(error)
         return NextResponse.json({message:`${error}internal sever error`}, {status: 500})

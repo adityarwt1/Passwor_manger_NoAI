@@ -4,6 +4,7 @@ import connectDB from "@/lib/mongodb";
 import { NextResponse } from "next/server";
 import { cookies } from 'next/headers'
 import jwt from 'jsonwebtoken'
+import bcrypt from "bcryptjs";
 
 export async function POST(req) {
   try {
@@ -33,7 +34,9 @@ export async function POST(req) {
       );
     }
 
-    const user = new User({ username, email, password });
+    // save password with bycript js
+    const hashedPassword = await bcrypt.hash(password, 10)
+    const user = new User({ username, email, password:hashedPassword });
     await user.save();
 
     // Create token payload
