@@ -4,16 +4,16 @@ import React, { useRef } from 'react';
 import emailjs from '@emailjs/browser';
 
 const ContactForm = () => {
-  const form = useRef();
+  const form = useRef<HTMLFormElement>(null);
 
-  const sendEmail = (e) => {
+  const sendEmail = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     emailjs
       .sendForm(
-        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID,
-        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID,
-        form.current,
+        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID as string,
+        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID as string,
+        form.current as HTMLFormElement ,
         {
           publicKey: process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY,
         }
@@ -21,7 +21,7 @@ const ContactForm = () => {
       .then(
         () => {
           console.log('Email successfully sent!');
-          form.current.reset();
+          (form.current as HTMLFormElement).reset();
         },
         (error) => {
           console.error('Error sending email:', error.text);

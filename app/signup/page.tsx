@@ -11,7 +11,7 @@ const Page = () => {
     const [serverMessage, setServerMessage] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsLoading(true);
         setServerMessage("");
@@ -33,7 +33,7 @@ const Page = () => {
 
             router.push("/");
         } catch (error) {
-            setServerMessage(error.message);
+            setServerMessage("Unable to signup");
         } finally {
             setIsLoading(false);
         }

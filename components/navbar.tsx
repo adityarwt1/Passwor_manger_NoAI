@@ -4,10 +4,16 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 
+interface userdata{
+  email: string 
+}
+
 const Navbar = () => {
+
+  
   const router = useRouter()
   const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [userData, setUserData] = useState(null)
+  const [userData, setUserData] = useState<userdata | null>(null)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
 

@@ -40,9 +40,6 @@ export default function RootLayout({
 
           {/* Favicon */}
           <Link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-          <Link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-          <Link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-          <Link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
           <Link rel="manifest" href="/site.webmanifest" />
 
           {/* Preload Critical Resources */}

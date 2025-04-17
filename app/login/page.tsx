@@ -10,7 +10,7 @@ const page = () => {
     const [password , setpassword] = useState("");
     const [serverMessage, setMessage] = useState();
 
-    const handleLogin = async (e) =>{
+    const handleLogin = async (e: React.FormEvent<HTMLFormElement>) =>{
         e.preventDefault()
         const response = await fetch("/api/login",{
             method: "POST",

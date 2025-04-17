@@ -3,8 +3,14 @@ import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 import { Copy, CopyCheckIcon, Delete, Edit, Eye, EyeOff } from 'lucide-react'
 
+interface PasswordItem{
+    _id: string,
+    plateform: string,
+    email?: string,
+    password: string
+}
 const PasswordOverview = () => {
-    const [passwords, setPasswords] = useState([]);
+    const [passwords, setPasswords] = useState<PasswordItem[]>([]);
     const [visiblePasswordId, setVisiblePasswordId] = useState("");
     const [copiedPasswordId, setCopiedPasswordId] = useState("");
     const [isLoading, setIsLoading] = useState(true);
@@ -36,13 +42,13 @@ const PasswordOverview = () => {
         fetchPasswords();
     }, []);
 
-    const handleCopyPassword = (id, password) => {
+    const handleCopyPassword = (id : string, password : string) => {
         navigator.clipboard.writeText(password);
         setCopiedPasswordId(id);
         setTimeout(() => setCopiedPasswordId(""), 2000);
     };
 
-    const handleDeletePassword = async (id) => {
+    const handleDeletePassword = async (id : string) => {
         if (!confirm("Are you sure you want to delete this password?")) return;
         
         try {
@@ -74,8 +80,8 @@ const PasswordOverview = () => {
         {isLoading ? (
             <div className="text-center p-4">Loading...</div>
         ) : passwords.length > 0 ? (
-            passwords.map((item) => (
-                <div key={item._id} className='mt-4 border-b pb-4 last:border-b-0'>
+            passwords.map((item ) => (
+                <div key={item._id } className='mt-4 border-b pb-4 last:border-b-0'>
                     {/* Platform and Email Section */}
                     <div className='mb-2'>
                         <div className='flex items-center'>
