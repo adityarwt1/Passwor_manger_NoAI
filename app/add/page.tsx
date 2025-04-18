@@ -31,7 +31,7 @@ const Page = () => {
             })
 
             if (response.ok) {
-                router.push("/")
+                router.push("/passwords")
             }
         } catch (error) {
             console.error("Submission error:", error)
