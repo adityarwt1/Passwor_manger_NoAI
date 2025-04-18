@@ -12,6 +12,9 @@ const k = () => {
     if (!response.ok){
       router.push("/login")
     }
+    if(response.ok){
+      router.push("/passwords")
+    }
   }
 
   useEffect(()=>{
