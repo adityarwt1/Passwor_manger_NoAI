@@ -13,13 +13,13 @@ export default function Footer() {
           <h2 className="text-white text-xl font-semibold mb-2">Contact Me</h2>
           <p className="text-white">Phone: <span className="text-white">+91 9244524565</span></p>
           <p className="text-white">Email: <span className="text-white">adityafullstackdoveloper@email.com</span></p>
-        </div>  
+        </div>
 
         {/* Links Section */}
         <div className="text-center md:text-right">
           <h2 className="text-white text-xl font-semibold mb-2">Follow Me</h2>
           <div className="flex justify-center md:justify-end space-x-6 text-white text-2xl">
-            <Link href="https://www.instagram.com/aditya_rawat_devops/" target="_blank">
+            <Link href="https://www.instagram.com/aditya_rwt1/" target="_blank">
               <FaInstagram className="hover:text-white transition-colors duration-300" />
             </Link>
             <Link href="https://github.com/adityarwt1" target="_blank">
@@ -37,5 +37,5 @@ export default function Footer() {
         © {new Date().getFullYear()} Aditya Rawat. All rights reserved.
       </div>
     </footer>
-  );    
+  );
 }

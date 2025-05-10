@@ -174,10 +174,7 @@ const PasswordOverview: React.FC<Username> = ({ username }) => {
                                     </div>
 
                                     <div className="flex justify-between">
-                                        <Link href={`/edit/${platform._id}`} className="text-blue-600 hover:text-blue-800 flex items-center text-sm">
-                                            <Edit size={16} className="mr-1" />
-                                            <span>Edit</span>
-                                        </Link>
+
                                         <button
                                             onClick={() => handleDeletePassword(platform._id)}
                                             className="text-red-600 hover:text-red-800 flex items-center text-sm"
