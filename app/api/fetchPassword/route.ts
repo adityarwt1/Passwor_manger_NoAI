@@ -8,11 +8,30 @@ export async function GET(req: NextRequest) {
         await connectDB();
         const searchParams = req.nextUrl.searchParams;
         const username = searchParams.get("username")
+        const query = searchParams.get("query")
+
 
         const filter: any = {}
         if (username) {
             filter.username = username
         }
+
+        if (query) {
+            filter.$or = [
+                {
+                    plateform: {
+                        $in: [new RegExp(query, 'i')]
+                    }
+                },
+                {
+                    'plateFormPassword.plateform': {
+                        $regex: query,
+                        $options: 'i'
+                    }
+                }
+            ];
+        }
+
 
         const passwords = await User.find(filter)
         if (!passwords) {

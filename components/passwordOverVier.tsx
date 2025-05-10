@@ -27,12 +27,19 @@ const PasswordOverview: React.FC<Username> = ({ username }) => {
     const [visiblePasswordId, setVisiblePasswordId] = useState("")
     const [copiedPasswordId, setCopiedPasswordId] = useState("")
     const [isLoading, setIsLoading] = useState(true)
+    const [query, setQuery] = useState("")
 
 
     const fetchPasswords = async () => {
+
+
         setIsLoading(true)
         try {
-            const response = await fetch(`/api/fetchPassword?username=${username}`, {
+            let url = `/api/fetchPassword?username=${username}`
+            if (query.length > 0) {
+                url = `/api/fetchPassword?query=${query}`
+            }
+            const response = await fetch(url, {
                 method: "GET"
             })
 
@@ -50,11 +57,12 @@ const PasswordOverview: React.FC<Username> = ({ username }) => {
         } finally {
             setIsLoading(false)
         }
+
     }
 
     useEffect(() => {
         fetchPasswords()
-    }, [])
+    }, [query])
 
     const handleCopyPassword = (id: string, password: string) => {
         navigator.clipboard.writeText(password)
@@ -67,7 +75,11 @@ const PasswordOverview: React.FC<Username> = ({ username }) => {
         if (!confirDeletePassword) return
 
         try {
-            const response = await fetch(`api/delete?username=${username}`, {
+            let url = `api/delete?username=${username}`
+            if (query) {
+                url += `&query=${query}`
+            }
+            const response = await fetch(url, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json"
@@ -104,7 +116,17 @@ const PasswordOverview: React.FC<Username> = ({ username }) => {
     }
 
     return (
-        <div className="container mx-auto p-4">
+        <div className="container mx-auto p-4 w-full">
+            <div className="w-full max-w-md mb-4 flex ">
+                <input
+                    type="text"
+                    placeholder="Search..."
+                    className="w-full pl-4  pr-12 py-2 border border-black rounded-md text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+                    onChange={(e) => setQuery(e.target.value)}
+                />
+            </div>
+
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {isLoading ? (
                     <div className="col-span-3 flex justify-center items-center p-8">
