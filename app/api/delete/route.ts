@@ -1,49 +1,49 @@
 import User from '@/models/User.js'
-import jwt from 'jsonwebtoken'
 import { cookies } from 'next/headers';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb.js'
 import mongoose from 'mongoose';
-export async function DELETE(req) {
+export async function DELETE(req: NextRequest) {
     try {
         await connectDB();
 
         // Get the current user from the token
         const cookieStore = await cookies();
-        const token = cookieStore.get('token')?.value;
+        const searchParams = req.nextUrl.searchParams;
 
-        if (!token) {
+        const username = searchParams.get("username")
+
+        if (!username) {
             return NextResponse.json(
                 { success: false, message: 'Unauthorized' },
                 { status: 401 }
             );
         }
 
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        
+
         // Get the password ID to delete
         const { _id } = await req.json();
-        
+
         if (!_id) {
             return NextResponse.json(
                 { success: false, message: 'Password ID is required' },
                 { status: 400 }
             );
-        }   
+        }
 
         // Update the user document
         const user = await User.findOneAndUpdate(
-            { username: decoded.username },
-            { 
-                $pull: { 
-                    plateFormPassword: { 
+            { username: username },
+            {
+                $pull: {
+                    plateFormPassword: {
                         _id: new mongoose.Types.ObjectId(_id) // Convert string to ObjectId
-                    } 
+                    }
                 }
             },
             { new: true }
         );
-        
+
         if (!user) {
             return NextResponse.json(
                 { success: false, message: "User not found" },

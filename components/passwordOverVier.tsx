@@ -63,10 +63,11 @@ const PasswordOverview: React.FC<Username> = ({ username }) => {
     }
 
     const handleDeletePassword = async (id: string) => {
-        if (!confirm("Are you sure you want to delete this password?")) return
+        const confirDeletePassword = confirm("Are you sure you want to delete this password?")
+        if (!confirDeletePassword) return
 
         try {
-            const response = await fetch("/api/delete", {
+            const response = await fetch(`api/delete?username=${username}`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json"
