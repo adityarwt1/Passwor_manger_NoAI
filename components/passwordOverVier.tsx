@@ -3,54 +3,68 @@ import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 import { Copy, CopyCheckIcon, Delete, Edit, Eye, EyeOff } from 'lucide-react'
 
-interface PasswordItem{
-    _id: string,
-    plateform: string,
-    email?: string,
+interface PlatformPassword {
+    plateform: string
     password: string
+    _id: string
 }
-const PasswordOverview = () => {
-    const [passwords, setPasswords] = useState<PasswordItem[]>([]);
-    const [visiblePasswordId, setVisiblePasswordId] = useState("");
-    const [copiedPasswordId, setCopiedPasswordId] = useState("");
-    const [isLoading, setIsLoading] = useState(true);
+
+interface PasswordItem {
+    _id: string
+    username: string
+    email: string
+    plateform: string[]
+    plateFormPassword: PlatformPassword[]
+    createdAt: string
+    updatedAt: string
+}
+
+interface Username {
+    username: string
+}
+const PasswordOverview: React.FC<Username> = ({ username }) => {
+    const [passwordData, setPasswordData] = useState<PasswordItem[]>([])
+    const [visiblePasswordId, setVisiblePasswordId] = useState("")
+    const [copiedPasswordId, setCopiedPasswordId] = useState("")
+    const [isLoading, setIsLoading] = useState(true)
+
 
     const fetchPasswords = async () => {
-        setIsLoading(true);
+        setIsLoading(true)
         try {
-            const response = await fetch("/api/fetchPassword", {
+            const response = await fetch(`/api/fetchPassword?username=${username}`, {
                 method: "GET"
-            });
+            })
 
-            const data = await response.json();
-            
+            const data = await response.json()
+
             if (response.ok && data.success && Array.isArray(data.data)) {
-                setPasswords(data.data);
+                setPasswordData(data.data)
             } else {
-                console.error("API Error:", data.message || "Invalid data format");
-                setPasswords([]);
+                console.error("API Error:", data.message || "Invalid data format")
+                setPasswordData([])
             }
         } catch (error) {
-            console.error("Fetch error:", error);
-            setPasswords([]);
+            console.error("Fetch error:", error)
+            setPasswordData([])
         } finally {
-            setIsLoading(false);
+            setIsLoading(false)
         }
-    };
+    }
 
     useEffect(() => {
-        fetchPasswords();
-    }, []);
+        fetchPasswords()
+    }, [])
 
-    const handleCopyPassword = (id : string, password : string) => {
-        navigator.clipboard.writeText(password);
-        setCopiedPasswordId(id);
-        setTimeout(() => setCopiedPasswordId(""), 2000);
-    };
+    const handleCopyPassword = (id: string, password: string) => {
+        navigator.clipboard.writeText(password)
+        setCopiedPasswordId(id)
+        setTimeout(() => setCopiedPasswordId(""), 2000)
+    }
 
-    const handleDeletePassword = async (id : string) => {
-        if (!confirm("Are you sure you want to delete this password?")) return;
-        
+    const handleDeletePassword = async (id: string) => {
+        if (!confirm("Are you sure you want to delete this password?")) return
+
         try {
             const response = await fetch("/api/delete", {
                 method: "DELETE",
@@ -58,97 +72,117 @@ const PasswordOverview = () => {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({ _id: id })
-            });
-            
+            })
+
             if (!response.ok) {
-                throw new Error('Failed to delete password');
+                throw new Error('Failed to delete password')
             }
-            
-            await fetchPasswords();
+
+            await fetchPasswords()
         } catch (error) {
-            console.error("Delete error:", error);
-            alert("Failed to delete password. Please try again.");
+            console.error("Delete error:", error)
+            alert("Failed to delete password. Please try again.")
         }
-    };
+    }
+
+    // Function to get the platform icon letter
+    const getPlatformIcon = (platformName: string) => {
+        return platformName.charAt(0).toUpperCase();
+    }
+
+    // Function to get the username or email for a platform
+    const getPlatformUsername = (platform: string) => {
+        if (platform.toLowerCase().includes('email')) {
+            return 'mongodb2487@gmail.com';
+        } else if (platform.toLowerCase().includes('spotify')) {
+            return 'pubgmobile2487@gmail.com';
+        } else if (platform.toLowerCase().includes('riot')) {
+            return 'lvmMaestro/lvMaestro';
+        }
+        return 'aditya_rwt1';
+    }
 
     return (
-        <div className='rounded-lg shadow-lg w-full max-w-[500px] py-5 duration-300 mt-2 border border-gray-300 mx-auto md:ml-10 px-5 hover:scale-95'>
-        <div className='rounded-tr-md rounded-tl-md p-4 border-zinc-950 border hover:bg-zinc-950 text-xl hover:text-white duration-300 text-center'>
-            Password Overview
-        </div>
-
-        {isLoading ? (
-            <div className="text-center p-4">Loading...</div>
-        ) : passwords.length > 0 ? (
-            passwords.map((item ) => (
-                <div key={item._id } className='mt-4 border-b pb-4 last:border-b-0'>
-                    {/* Platform and Email Section */}
-                    <div className='mb-2'>
-                        <div className='flex items-center'>
-                            <span className='font-medium mr-2'>{item.plateform || 'Unknown'}</span>
-                            <span className='text-gray-500 text-sm'>......</span>
-                        </div>
-                        {item.email && (
-                            <div className='text-sm text-gray-600 mt-1'>
-                                <div>Email {item.email.split('@')[0]}</div>
-                                <div className='text-xs'>({item.email})</div>
-                            </div>
-                        )}
+        <div className="container mx-auto p-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {isLoading ? (
+                    <div className="col-span-3 flex justify-center items-center p-8">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
                     </div>
+                ) : passwordData.length > 0 ? (
+                    passwordData.flatMap((userData) =>
+                        userData.plateFormPassword.map((platform) => {
+                            const isVisible = visiblePasswordId === platform._id;
+                            const platformName = platform.plateform.split('(')[0].trim();
+                            const platformIcon = getPlatformIcon(platformName);
+                            const username = getPlatformUsername(platform.plateform);
 
-                    {/* Password and Actions Section */}
-                    <div className='flex justify-between items-center'>
-                        <div className='flex items-center'>
-                            <input 
-                                type={visiblePasswordId === item._id ? "text" : "password"}
-                                readOnly
-                                value={item.password}
-                                className='max-w-[120px] overflow-hidden bg-transparent font-mono'
-                                aria-label="Password"
-                            />
-                            <button 
-                                onClick={() => setVisiblePasswordId(visiblePasswordId === item._id ? "" : item._id)}
-                                className='ml-2 text-gray-500 hover:text-gray-700'
-                            >
-                                {visiblePasswordId === item._id ? <EyeOff size={18} /> : <Eye size={18} />}
-                            </button>
-                        </div>
+                            return (
+                                <div key={platform._id} className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
+                                    <div className="flex items-center mb-4">
+                                        <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mr-3 text-lg font-semibold">
+                                            {platformIcon}
+                                        </div>
+                                        <div className="flex-1">
+                                            <h3 className="font-medium text-lg">{platformName}</h3>
+                                            <p className="text-gray-600 text-sm">{username}</p>
+                                        </div>
+                                        <div>
+                                            <button
+                                                onClick={() => setVisiblePasswordId(isVisible ? "" : platform._id)}
+                                                className="text-gray-500 hover:text-gray-700 mx-1"
+                                            >
+                                                {isVisible ? <EyeOff size={20} /> : <Eye size={20} />}
+                                            </button>
+                                            <button
+                                                onClick={() => handleCopyPassword(platform._id, platform.password)}
+                                                className="text-gray-500 hover:text-gray-700 mx-1"
+                                            >
+                                                {copiedPasswordId === platform._id ? <CopyCheckIcon size={20} /> : <Copy size={20} />}
+                                            </button>
+                                        </div>
+                                    </div>
 
-                        <div className='flex space-x-3'>
-                            <button 
-                                onClick={() => handleCopyPassword(item._id, item.password)}
-                                className='text-gray-500 hover:text-gray-700'
-                            >
-                                {copiedPasswordId === item._id ? <CopyCheckIcon size={18} /> : <Copy size={18} />}
-                            </button>
-                            <Link 
-                                href={`/edit/${item._id}`}
-                                className='text-blue-500 hover:text-blue-700'
-                            >
-                                <Edit size={18} />
-                            </Link>
-                            <button 
-                                onClick={() => handleDeletePassword(item._id)}
-                                className='text-red-500 hover:text-red-700'
-                            >
-                                <Delete size={18} />
-                            </button>
+                                    <div className="mb-4">
+                                        <p className="text-sm text-gray-500 mb-1">Password</p>
+                                        <div className="bg-gray-100 p-2 rounded">
+                                            {isVisible ? platform.password : '•'.repeat(7)}
+                                        </div>
+                                    </div>
+
+                                    <div className="flex justify-between">
+                                        <Link href={`/edit/${platform._id}`} className="text-blue-600 hover:text-blue-800 flex items-center text-sm">
+                                            <Edit size={16} className="mr-1" />
+                                            <span>Edit</span>
+                                        </Link>
+                                        <button
+                                            onClick={() => handleDeletePassword(platform._id)}
+                                            className="text-red-600 hover:text-red-800 flex items-center text-sm"
+                                        >
+                                            <Delete size={16} className="mr-1" />
+                                            <span>Delete</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            );
+                        })
+                    )
+                ) : (
+                    <div className="col-span-3 text-center p-6">
+                        <div className="mb-4 text-gray-500">
+                            No passwords saved yet
                         </div>
+                        <Link
+                            href="/add"
+                            className='inline-flex items-center px-4 py-2 rounded-md bg-zinc-900 text-white hover:bg-zinc-800 transition-colors font-medium'
+                        >
+                            Add Your First Password
+                        </Link>
                     </div>
-                </div>
-            ))
-        ) : (
-            <div className='text-center p-4'>
-                <Link 
-                    href="/add" 
-                    className='inline-block border p-2 rounded-md bg-zinc-950 text-white hover:bg-zinc-800 transition-colors'
-                >
-                    Click here to add password...
-                </Link>
+                )}
             </div>
-        )}
-    </div>
-);
+        </div>
+    )
 }
 
-export default PasswordOverview;
+export default PasswordOverview
