@@ -5,6 +5,7 @@ import Navbar from "@/components/navbar";
 import Head from "next/head";
 import Link from "next/link";
 import Footer from "@/components/Footer";
+import { ClerkProvider } from "@clerk/nextjs";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,35 +30,36 @@ export default function RootLayout({
 }>) {
   return (
     <>
-      <html>
-        <Head>
-          {/* Security Headers */}
-          <meta httpEquiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'" />
-          <meta httpEquiv="X-Content-Type-Options" content="nosniff" />
-          <meta httpEquiv="X-Frame-Options" content="DENY" />
-          <meta httpEquiv="X-XSS-Protection" content="1; mode=block" />
-          <meta name="referrer" content="strict-origin" />
+      <ClerkProvider>
+        <html>
+          <Head>
+            {/* Security Headers */}
+            <meta httpEquiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'" />
+            <meta httpEquiv="X-Content-Type-Options" content="nosniff" />
+            <meta httpEquiv="X-Frame-Options" content="DENY" />
+            <meta httpEquiv="X-XSS-Protection" content="1; mode=block" />
+            <meta name="referrer" content="strict-origin" />
 
-          {/* Favicon */}
-          <Link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-          <Link rel="manifest" href="/site.webmanifest" />
+            {/* Favicon */}
+            <Link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+            <Link rel="manifest" href="/site.webmanifest" />
 
-          {/* Preload Critical Resources */}
-        </Head>
-        <body>
+            {/* Preload Critical Resources */}
+          </Head>
+          <body>
 
 
-          <div className="min-h-screen flex flex-col">
-            <Navbar />
-            <main className="flex-1 container mx-auto px-4 py-8">
-              {children}
-            </main>
-            {/* Footer can be added here */}
-            <Footer />
-          </div>
-        </body>
-      </html>
-
+            <div className="min-h-screen flex flex-col">
+              <Navbar />
+              <main className="flex-1 container mx-auto px-4 py-8">
+                {children}
+              </main>
+              {/* Footer can be added here */}
+              <Footer />
+            </div>
+          </body>
+        </html>
+      </ClerkProvider>
     </>
   );
 }

@@ -7,6 +7,7 @@ export async function GET() {
     try {
         const cookiesStore = await cookies();
         const token = cookiesStore.get("token")?.value;
+        console.log(token)
         if(!token){
             return NextResponse.json({success: false, message:"Unotherized route" },{status: 401})
         }
