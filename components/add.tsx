@@ -5,7 +5,7 @@ import React, { useEffect, useId, useState } from 'react'
 
 interface UsenameUserId {
     username: string,
-    userId: string
+    userId: string | null,
 }
 const Add: React.FC<UsenameUserId> = ({ username, userId }) => {
     const router = useRouter()

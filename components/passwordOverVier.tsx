@@ -121,7 +121,7 @@ const PasswordOverview: React.FC<Username> = ({ username }) => {
                 <input
                     type="text"
                     placeholder="Search..."
-                    className="w-full pl-4  pr-12 py-2 border border-black rounded-md text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
+                    className="w-full pl-4 hidden         pr-12 py-2 border border-black rounded-md text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
                     onChange={(e) => setQuery(e.target.value)}
                 />
             </div>
