@@ -26,16 +26,12 @@ const Add: React.FC<UsenameUserId> = ({ username, userId }) => {
         e.preventDefault()
         setDisableSubmit(true)
         try {
-            const response = await fetch(`/api/add?username=${username}&userid=${userId}`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ plateform, password })
+            const response = await fetch(`/api/add?username=${username}&userid=${userId}&plateform=${plateform}&password=${password}`, {
+                method: "POST"
             })
 
             if (response.ok) {
-                router.push("/passwords")
+                router.push("/")
             }
         } catch (error) {
             console.error("Submission error:", error)
