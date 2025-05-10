@@ -1,14 +1,27 @@
 import Add from '@/components/add'
 import { auth, currentUser } from '@clerk/nextjs/server'
+import { redirect } from 'next/dist/server/api-utils'
 import React from 'react'
 
 const page = async () => {
 
-    const {userId} = auth()
-    const {username} =await  currentUser()
+  const authUser = await auth()
+  const user = await currentUser()
+  const username = user?.username || null
+  const userId = authUser?.userId || null
+
+
+  if (!username) {
+    redirect("/signin")
+  }
+
+  if (!userId) {
+    redirect("/signin")
+  }
+
   return (
     <div>
-      <Add userId={userId} username={username}/>
+      <Add userId={userId} username={username} />
     </div>
   )
 }

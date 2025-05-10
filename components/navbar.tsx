@@ -5,13 +5,13 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 
-interface userdata{
-  email: string 
+interface userdata {
+  email: string
 }
 
 const Navbar = () => {
 
-  
+
   const router = useRouter()
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [userData, setUserData] = useState<userdata | null>(null)
@@ -19,7 +19,7 @@ const Navbar = () => {
   const [isLoading, setIsLoading] = useState(true)
 
   // Fetch user authentication status
-  
+
   // Handle user logout
   const handleLogout = async () => {
     try {
@@ -27,7 +27,7 @@ const Navbar = () => {
         method: "DELETE",
         credentials: 'include'
       })
-      
+
       if (response.ok) {
         setIsLoggedIn(false)
         setUserData(null)
@@ -42,7 +42,6 @@ const Navbar = () => {
   // Navigation items
   const navItems = [
     { href: "/", label: "Dashboard" },
-    { href: "/passwords", label: "Password Vault" },
     { href: "/generator", label: "Password Generator" },
     { href: "/help", label: "Help & Support" },
     { href: "/add", label: "Add Password" }
@@ -75,23 +74,23 @@ const Navbar = () => {
 
           {/* User Actions - Desktop */}
           <div className="hidden md:flex items-center space-x-3">
-          
+
           </div>
 
           {/* Mobile Menu Button */}
           <div className='flex items-center '>
-          <Link href={`/add`} className='md:hidden p-2 mr-4 rounded-md flex bg-zinc-950 text-white'><Plus/> Add</Link>
-          <div className="md:hidden">
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 text-zinc-700 hover:text-zinc-900 focus:outline-none"
-              aria-label="Toggle menu"
-            >
-              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
+            <Link href={`/add`} className='md:hidden p-2 mr-4 rounded-md flex bg-zinc-950 text-white'><Plus /> Add</Link>
+            <div className="md:hidden">
+              <button
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="p-2 text-zinc-700 hover:text-zinc-900 focus:outline-none"
+                aria-label="Toggle menu"
+              >
+                {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              </button>
+            </div>
+            <SignedIn><UserButton /></SignedIn><SignedOut><div className='mx-2'><SignInButton /></div><SignUpButton /></SignedOut>
           </div>
-        <SignedIn><UserButton/></SignedIn><SignedOut><div className='mx-2'><SignInButton/></div><SignUpButton/></SignedOut>
-        </div>
         </div>
 
         {/* Mobile Menu */}
@@ -108,7 +107,7 @@ const Navbar = () => {
                   {item.label}
                 </Link>
               ))}
-              
+
               <div className="pt-2 border-t border-zinc-100">
               </div>
             </div>

@@ -1,7 +1,7 @@
 "use client"
 import { Copy, CopyCheck, RefreshCw, Key } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useId, useState } from 'react'
 
 interface UsenameUserId {
     username: string,
@@ -26,12 +26,12 @@ const Add: React.FC<UsenameUserId> = ({ username, userId }) => {
         e.preventDefault()
         setDisableSubmit(true)
         try {
-            const response = await fetch("/api/add", {
+            const response = await fetch(`/api/add?username=${username}&userid=${userId}`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ plateform, password, username, userId })
+                body: JSON.stringify({ plateform, password })
             })
 
             if (response.ok) {
@@ -76,18 +76,6 @@ const Add: React.FC<UsenameUserId> = ({ username, userId }) => {
         setTimeout(() => setCopied(false), 2000)
     }
 
-    const cookieConfirmation = async () => {
-        const response = await fetch("/api/cookieconfirmation", {
-            method: "GET"
-        })
-        if (!response.ok) {
-            router.push("/login")
-        }
-    }
-
-    useEffect(() => {
-        cookieConfirmation()
-    }, [])
 
     return (
         <div className="flex w-full min-h-screen justify-center items-center bg-black text-white px-4 py-8">
