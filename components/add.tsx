@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation'
 import React, { useEffect, useId, useState } from 'react'
 
 interface UsenameUserId {
-    username: string,
+    username: string | null,
     userId: string | null,
 }
 const Add: React.FC<UsenameUserId> = ({ username, userId }) => {
