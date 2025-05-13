@@ -1,5 +1,5 @@
 import Add from '@/components/add'
-import { auth, currentUser } from '@clerk/nextjs/server'
+import { auth, clerkClient, currentUser } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 import React from 'react'
 
@@ -12,7 +12,8 @@ const page = async () => {
 
 
   if (!username) {
-    redirect("https://clever-dolphin-8.accounts.dev/sign-in?redirect_url=https://securopass.vercel.app/")
+    const signInUrl = clerkClient.sessions.getSignInUrl({ redirectUrl: "/" });
+    redirect(signInUrl);
   }
 
 
