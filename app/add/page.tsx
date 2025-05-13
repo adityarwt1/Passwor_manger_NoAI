@@ -12,7 +12,7 @@ const page = async () => {
 
 
   if (!username) {
-    redirect("/signin")
+    redirect("/signin?redirect_url=/")
   }
 
 

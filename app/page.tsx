@@ -11,7 +11,8 @@ const k = async () => {
   const username = user?.username || null
 
   if (!username) {
-    redirect("/signin")
+    redirect("/signin?redirect_url=/")
+
   }
 
 
