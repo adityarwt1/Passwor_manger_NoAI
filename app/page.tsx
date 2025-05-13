@@ -11,7 +11,7 @@ const k = async () => {
   const username = user?.username || null
 
   if (!username) {
-    redirect("https://clever-dolphin-8.accounts.dev/sign-in?redirect_url=/sign-in")
+    redirect("https://clever-dolphin-8.accounts.dev/sign-in?redirect_url=https://securopass.vercel.app/")
 
   }
 
