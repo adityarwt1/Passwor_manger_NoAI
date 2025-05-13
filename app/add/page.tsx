@@ -12,8 +12,7 @@ const page = async () => {
 
 
   if (!username) {
-    const signInUrl = clerkClient.sessions.getSignInUrl({ redirectUrl: "/" });
-    redirect(signInUrl);
+    redirect(process.env.NEXT_PUBLIC_CLERK_SIGN_IN_URL as string)
   }
 
 
