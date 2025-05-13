@@ -2,6 +2,7 @@
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 import { Copy, CopyCheckIcon, Delete, Edit, Eye, EyeOff } from 'lucide-react'
+import { SignIn, SignInButton, SignUpButton } from '@clerk/nextjs'
 
 interface PlatformPassword {
     plateform: string
@@ -20,7 +21,7 @@ interface PasswordItem {
 }
 
 interface Username {
-    username: string
+    username: string | null
 }
 const PasswordOverview: React.FC<Username> = ({ username }) => {
     const [passwordData, setPasswordData] = useState<PasswordItem[]>([])
@@ -198,6 +199,8 @@ const PasswordOverview: React.FC<Username> = ({ username }) => {
                         >
                             Add Your First Password
                         </Link>
+                        <div>Or</div>
+                        {!username ? (<div><div className='mx-2 my-2'><SignInButton /></div><div><SignUpButton></SignUpButton></div></div>) : (<div></div>)}
                     </div>
                 )}
             </div>

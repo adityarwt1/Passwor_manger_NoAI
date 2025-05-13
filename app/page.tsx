@@ -1,6 +1,6 @@
 
 import PasswordOverVier from '@/components/passwordOverVier'
-import { clerkClient, currentUser } from '@clerk/nextjs/server'
+import { auth, clerkClient, currentUser } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 import React from 'react'
 
@@ -10,10 +10,7 @@ const k = async () => {
 
   const username = user?.username || null
 
-  if (!username) {
-    redirect(process.env.NEXT_PUBLIC_CLERK_SIGN_IN_URL as string)
 
-  }
 
 
 

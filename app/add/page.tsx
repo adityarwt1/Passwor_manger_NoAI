@@ -11,11 +11,6 @@ const page = async () => {
   const userId = authUser?.userId || null
 
 
-  if (!username) {
-    redirect(process.env.NEXT_PUBLIC_CLERK_SIGN_IN_URL as string)
-  }
-
-
   return (
     <div>
       <Add userId={userId} username={username} />
