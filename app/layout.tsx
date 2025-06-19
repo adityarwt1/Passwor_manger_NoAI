@@ -18,9 +18,14 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Securo Pass - Your Ultimate Password Manager',
-  description: 'Military-grade encrypted password vault with zero-knowledge security. Manage, generate, and autofill passwords securely across all devices.',
-  keywords: ['secure password manager', 'encrypted vault', 'password generator',]// Your 100 keywords here
+  title: "Securo Pass - Your Ultimate Password Manager",
+  description:
+    "Aditya Rawat- Military-grade encrypted password vault with zero-knowledge security. Manage, generate, and autofill passwords securely across all devices.",
+  keywords: [
+    "secure password manager",
+    "encrypted vault",
+    "password generator",
+  ], // Your 100 keywords here
 };
 
 export default function RootLayout({
@@ -34,7 +39,10 @@ export default function RootLayout({
         <html>
           <Head>
             {/* Security Headers */}
-            <meta httpEquiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'" />
+            <meta
+              httpEquiv="Content-Security-Policy"
+              content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'"
+            />
             <meta httpEquiv="X-Content-Type-Options" content="nosniff" />
             <meta httpEquiv="X-Frame-Options" content="DENY" />
             <meta httpEquiv="X-XSS-Protection" content="1; mode=block" />
@@ -47,8 +55,6 @@ export default function RootLayout({
             {/* Preload Critical Resources */}
           </Head>
           <body>
-
-
             <div className="min-h-screen flex flex-col">
               <Navbar />
               <main className="flex-1 container mx-auto px-4 py-8">
