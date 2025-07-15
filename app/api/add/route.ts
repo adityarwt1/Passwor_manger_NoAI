@@ -1,6 +1,5 @@
 import connectDB from "@/lib/mongodb";
 import Password from "@/models/Password";
-import User from "@/models/User";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
@@ -11,7 +10,6 @@ export async function POST(req: NextRequest) {
     const username = searchParams.get("username");
     const plateform = searchParams.get("plateform");
     const password = searchParams.get("password");
-
     if (!username || !plateform || !password) {
       return NextResponse.json({ message: "bad request" }, { status: 400 });
     }
