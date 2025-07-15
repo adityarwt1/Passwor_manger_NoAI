@@ -5,10 +5,11 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(req: NextRequest, res: NextResponse) {
   try {
     const { userId } = await auth();
+
     if (!userId) {
       return NextResponse.json({ message: "Not found " }, { status: 404 });
     }
-    return NextResponse.json({ userId }, { status: 200 });
+    return NextResponse.json({ userId, data: getAuth(req) }, { status: 200 });
   } catch (error) {
     console.log((error as Error).message);
     return NextResponse.json(
