@@ -38,11 +38,11 @@ const PasswordOverview: React.FC<Username> = ({ username }) => {
         url = `/api/fetchPassword?query=${query}`;
       }
       const response = await fetch(url, {
-        method: "GET",
+        method: "POST",
       });
 
       const data = await response.json();
-
+      console.log(data);
       if (response.ok && data.success && Array.isArray(data.data)) {
         setPasswordData(data.data);
       } else {
