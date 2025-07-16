@@ -150,6 +150,14 @@ const PasswordCard: React.FC<PasswordCardProps> = ({ passwordData }) => {
               >
                 {showPassword ? "Hide" : "Show"}
               </button>
+              {editcontent && (
+                <div
+                  onClick={handleSave}
+                  className="bg-green-500 py-1 px-2 rounded-sm ml-1 cursor-pointer"
+                >
+                  {saving ? "Saving..." : "Save"}
+                </div>
+              )}
             </div>
           </div>
         </div>
