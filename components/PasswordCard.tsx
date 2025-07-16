@@ -16,6 +16,8 @@ interface PasswordCardProps {
 
 const PasswordCard: React.FC<PasswordCardProps> = ({ passwordData }) => {
   const [password, setPassword] = useState(passwordData);
+  const [showPassword, setShowPassword] = useState(false);
+  const [toggleShow, setToggleshow] = useState(false);
   const handleEdit = () => {
     console.log("Edit:", passwordData);
     // Implement edit logic
@@ -86,15 +88,14 @@ const PasswordCard: React.FC<PasswordCardProps> = ({ passwordData }) => {
           <div>
             <p className="text-sm text-zinc-500 dark:text-zinc-400">Password</p>
             <div className="flex items-center">
-              <p className="text-zinc-800 dark:text-zinc-200">••••••••</p>
+              <p className="text-zinc-800 dark:text-zinc-200">
+                {showPassword ? password.password : "••••••••"}
+              </p>
               <button
                 className="ml-2 text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
-                onClick={() => {
-                  // Implement reveal password logic here
-                  alert(`Password: ${password.password}`);
-                }}
+                onClick={() => setShowPassword((prev) => !prev)}
               >
-                Show
+                {showPassword ? "Hide" : "Show"}
               </button>
             </div>
           </div>
