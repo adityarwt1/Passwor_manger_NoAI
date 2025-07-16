@@ -13,11 +13,17 @@ interface PasswordCardProps {
   onDelete?: (id: string) => void;
 }
 
-const PasswordCard: React.FC<PasswordCardProps> = ({
-  passwordData,
-  onEdit,
-  onDelete,
-}) => {
+const PasswordCard: React.FC<PasswordCardProps> = ({ passwordData }) => {
+  const handleEdit = (data: Password) => {
+    console.log("Edit:", data);
+    // Implement edit logic
+  };
+
+  const handleDelete = (id: string) => {
+    console.log("Delete:", id);
+    // Implement delete logic
+  };
+
   return (
     <div className="bg-zinc-100 rounded-lg shadow-md overflow-hidden transition-all hover:shadow-lg dark:bg-zinc-800 dark:text-white">
       <div className="p-6">
@@ -26,9 +32,9 @@ const PasswordCard: React.FC<PasswordCardProps> = ({
             {passwordData.plateform || "Unknown Platform"}
           </h3>
           <div className="flex space-x-2">
-            {onEdit && (
+            {handleEdit && (
               <button
-                onClick={() => onEdit(passwordData)}
+                onClick={() => handleEdit(passwordData)}
                 className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-200"
                 aria-label="Edit"
               >
@@ -42,10 +48,10 @@ const PasswordCard: React.FC<PasswordCardProps> = ({
                 </svg>
               </button>
             )}
-            {onDelete && (
+            {handleDelete && (
               <button
                 onClick={() =>
-                  passwordData._id && onDelete(passwordData._id.toString())
+                  passwordData._id && handleDelete(passwordData._id.toString())
                 }
                 className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-200"
                 aria-label="Delete"
