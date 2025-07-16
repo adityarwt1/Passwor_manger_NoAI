@@ -37,11 +37,19 @@ const PasswordCard: React.FC<PasswordCardProps> = ({ passwordData }) => {
     <div className="bg-zinc-100 rounded-lg shadow-md overflow-hidden transition-all hover:shadow-lg dark:bg-zinc-800 dark:text-white">
       <div className="p-6">
         <div className="flex justify-between items-start mb-4">
-          <h3 className="text-xl font-semibold text-zinc-800 dark:text-zinc-100">
-            {password.plateform.length < 10
-              ? password.plateform
-              : `${password.plateform.slice(0, 7)}...` || "Unknown Platform"}
-          </h3>
+          <input
+            className="text-xl font-semibold text-zinc-800 dark:text-zinc-100"
+            disabled={editcontent}
+            defaultValue={
+              password.plateform.length < 10
+                ? password.plateform
+                : `${password.plateform.slice(0, 7)}...` || "Unknown Platform"
+            }
+            onChange={(e) => {
+              setChanges({ ...changes, plateform: e.target.value });
+            }}
+          />
+
           <div className="flex space-x-2">
             {handleEdit && (
               <button
@@ -87,7 +95,9 @@ const PasswordCard: React.FC<PasswordCardProps> = ({ passwordData }) => {
             <p className="text-sm text-zinc-500 dark:text-zinc-400">Username</p>
             <input
               type="text"
-              onChange={(e) => console.log(e.target.value)}
+              onChange={(e) =>
+                setChanges({ ...changes, username: e.target.value })
+              }
               className="text-zinc-800 dark:text-zinc-200 border px-1 w-fit rounded"
               defaultValue={password.username || "Not specified"}
               disabled={editcontent}
@@ -97,9 +107,15 @@ const PasswordCard: React.FC<PasswordCardProps> = ({ passwordData }) => {
           <div>
             <p className="text-sm text-zinc-500 dark:text-zinc-400">Password</p>
             <div className="flex items-center">
-              <p className="text-zinc-800 dark:text-zinc-200">
-                {showPassword ? password.password : "••••••••"}
-              </p>
+              <input
+                className="text-zinc-800 dark:text-zinc-200"
+                defaultValue={showPassword ? password.password : "••••••••"}
+                disabled={editcontent}
+                onChange={(e) =>
+                  setChanges({ ...changes, password: e.target.value })
+                }
+              />
+
               <button
                 className="ml-2 text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
                 onClick={() => setShowPassword((prev) => !prev)}
