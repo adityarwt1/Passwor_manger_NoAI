@@ -36,6 +36,17 @@ const PasswordCard: React.FC<PasswordCardProps> = ({ passwordData }) => {
   const handleSave = async () => {
     setSaving(!saving);
     try {
+      const response = await fetch("/api/edit", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          _id: password._id,
+          plateform: changes.plateform,
+          password: changes.password,
+        }),
+      });
     } catch (error) {
     } finally {
       setSaving(!saving);
