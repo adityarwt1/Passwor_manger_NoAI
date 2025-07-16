@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 // Import your Password model type
 
 interface Password {
@@ -15,6 +15,7 @@ interface PasswordCardProps {
 }
 
 const PasswordCard: React.FC<PasswordCardProps> = ({ passwordData }) => {
+  const [password, setPassword] = useState(passwordData);
   const handleEdit = () => {
     console.log("Edit:", passwordData);
     // Implement edit logic
@@ -30,7 +31,7 @@ const PasswordCard: React.FC<PasswordCardProps> = ({ passwordData }) => {
       <div className="p-6">
         <div className="flex justify-between items-start mb-4">
           <h3 className="text-xl font-semibold text-zinc-800 dark:text-zinc-100">
-            {passwordData.plateform.length < 10
+            {password.plateform.length < 10
               ? passwordData.plateform
               : `${passwordData.plateform.slice(0, 7)}...` ||
                 "Unknown Platform"}
