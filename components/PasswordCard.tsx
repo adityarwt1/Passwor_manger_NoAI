@@ -10,15 +10,20 @@ interface Password {
 }
 interface PasswordCardProps {
   passwordData: Password;
-  onEdit?: (data: Password) => void;
-  onDelete?: (id: string) => void;
 }
 
 const PasswordCard: React.FC<PasswordCardProps> = ({ passwordData }) => {
   const [password, setPassword] = useState(passwordData);
   const [showPassword, setShowPassword] = useState(false);
   const [toggleShow, setToggleshow] = useState(false);
+  const [editcontent, setEditContent] = useState(false);
+  const [changes, setChanges] = useState({
+    plateform: "",
+    username: "",
+    password: "",
+  });
   const handleEdit = () => {
+    setEditContent(!editcontent);
     console.log("Edit:", passwordData);
     // Implement edit logic
   };
@@ -80,9 +85,13 @@ const PasswordCard: React.FC<PasswordCardProps> = ({ passwordData }) => {
         <div className="space-y-3">
           <div>
             <p className="text-sm text-zinc-500 dark:text-zinc-400">Username</p>
-            <p className="text-zinc-800 dark:text-zinc-200">
-              {password.username || "Not specified"}
-            </p>
+            <input
+              type="text"
+              onChange={(e) => console.log(e.target.value)}
+              className="text-zinc-800 dark:text-zinc-200 border px-1 w-fit rounded"
+              defaultValue={password.username || "Not specified"}
+              disabled={editcontent}
+            />
           </div>
 
           <div>
