@@ -6,29 +6,28 @@ export async function PUT(req: NextRequest) {
   try {
     await connectDB();
     const { _id, plateform, password } = await req.json();
+
     if (!_id || !plateform || !password) {
       return NextResponse.json({ message: "bad request" }, { status: 400 });
     }
+
     const update = await Password.findOneAndUpdate(
-      {
-        _id,
-      },
-      {
-        plateform,
-        password,
-      }
+      { _id },
+      { plateform, password },
+      { new: true } // ✅ return the updated document
     );
+
     if (!update) {
       return NextResponse.json(
-        { message: "Unable ot update the pasword" },
+        { message: "Unable to update the password" },
         { status: 404 }
       );
-    } else {
-      return NextResponse.json(
-        { message: "Password updated successfully", update },
-        { status: 200 }
-      );
     }
+
+    return NextResponse.json(
+      { message: "Password updated successfully", update },
+      { status: 200 }
+    );
   } catch (error) {
     console.log((error as Error).message);
     return NextResponse.json(

@@ -22,9 +22,9 @@ const PasswordCard: React.FC<PasswordCardProps> = ({ passwordData }) => {
     username: "",
     password: "",
   });
+  const [saving, setSaving] = useState(false);
   const handleEdit = () => {
     setEditContent(!editcontent);
-    console.log("Edit:", passwordData);
     // Implement edit logic
   };
 
@@ -33,6 +33,14 @@ const PasswordCard: React.FC<PasswordCardProps> = ({ passwordData }) => {
     // Implement delete logic
   };
 
+  const handleSave = async () => {
+    setSaving(!saving);
+    try {
+    } catch (error) {
+    } finally {
+      setSaving(!saving);
+    }
+  };
   return (
     <div className="bg-zinc-100 rounded-lg shadow-md overflow-hidden transition-all hover:shadow-lg dark:bg-zinc-800 dark:text-white">
       <div className="p-6">
@@ -41,7 +49,7 @@ const PasswordCard: React.FC<PasswordCardProps> = ({ passwordData }) => {
             className={`text-xl font-semibold text-zinc-800 dark:text-zinc-100 rounded ${
               editcontent ? "border" : ""
             }`}
-            disabled={editcontent}
+            disabled={!editcontent}
             defaultValue={
               password.plateform.length < 10
                 ? password.plateform
@@ -104,7 +112,7 @@ const PasswordCard: React.FC<PasswordCardProps> = ({ passwordData }) => {
                 editcontent ? "border" : ""
               }`}
               defaultValue={password.username || "Not specified"}
-              disabled={editcontent}
+              disabled={!editcontent}
             />
           </div>
 
@@ -116,18 +124,24 @@ const PasswordCard: React.FC<PasswordCardProps> = ({ passwordData }) => {
                   editcontent ? `border   ` : ""
                 }`}
                 defaultValue={showPassword ? password.password : "••••••••"}
-                disabled={editcontent}
+                disabled={!editcontent}
                 onChange={(e) =>
                   setChanges({ ...changes, password: e.target.value })
                 }
               />
 
-              <button
-                className="ml-2 text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
-                onClick={() => setShowPassword((prev) => !prev)}
-              >
-                {showPassword ? "Hide" : "Show"}
-              </button>
+              {!editcontent ? (
+                <button
+                  className="ml-2 text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                >
+                  {showPassword ? "Hide" : "Show"}
+                </button>
+              ) : (
+                <div className="bg-green-500 py-1 px-2 rounded-sm ml-1">
+                  {saving ? "Saving..." : "Save"}
+                </div>
+              )}
             </div>
           </div>
         </div>
