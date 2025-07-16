@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-// Import your Password model type
 
 interface Password {
   plateform: string;
@@ -8,6 +7,7 @@ interface Password {
   _id: string;
   password: string;
 }
+
 interface PasswordCardProps {
   passwordData: Password;
 }
@@ -15,7 +15,6 @@ interface PasswordCardProps {
 const PasswordCard: React.FC<PasswordCardProps> = ({ passwordData }) => {
   const [password, setPassword] = useState(passwordData);
   const [showPassword, setShowPassword] = useState(false);
-  const [toggleShow, setToggleshow] = useState(false);
   const [editcontent, setEditContent] = useState(false);
   const [changes, setChanges] = useState({
     plateform: "",
@@ -23,9 +22,13 @@ const PasswordCard: React.FC<PasswordCardProps> = ({ passwordData }) => {
     password: "",
   });
   const [saving, setSaving] = useState(false);
+
   const handleEdit = () => {
+    // Reset showPassword when entering edit mode
+    if (!editcontent) {
+      setShowPassword(true);
+    }
     setEditContent(!editcontent);
-    // Implement edit logic
   };
 
   const handleDelete = async () => {
@@ -43,11 +46,10 @@ const PasswordCard: React.FC<PasswordCardProps> = ({ passwordData }) => {
     } catch (error) {
       console.log((error as Error).message);
     }
-    // Implement delete logic
   };
 
   const handleSave = async () => {
-    setSaving(!saving);
+    setSaving(true);
     try {
       const response = await fetch("/api/edit", {
         method: "PUT",
@@ -61,15 +63,24 @@ const PasswordCard: React.FC<PasswordCardProps> = ({ passwordData }) => {
         }),
       });
       const data = await response.json();
-      if (response.ok) setPassword(data.update);
+      if (response.ok) {
+        setPassword(data.update);
+      }
     } catch (error) {
       console.log((error as Error).message);
     } finally {
-      setEditContent(!editcontent);
-      setSaving(!saving);
-      setShowPassword(false);
+      setEditContent(false);
+      setSaving(false);
+      setShowPassword(false); // Reset showPassword after saving
     }
   };
+
+  const toggleShowPassword = () => {
+    if (!editcontent) {
+      setShowPassword((prev) => !prev);
+    }
+  };
+
   return (
     <div className="bg-zinc-100 rounded-lg shadow-md overflow-hidden transition-all hover:shadow-lg dark:bg-zinc-800 dark:text-white">
       <div className="p-6">
@@ -90,42 +101,38 @@ const PasswordCard: React.FC<PasswordCardProps> = ({ passwordData }) => {
           />
 
           <div className="flex space-x-2">
-            {handleEdit && (
-              <button
-                onClick={handleEdit}
-                className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-200"
-                aria-label="Edit"
+            <button
+              onClick={handleEdit}
+              className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-200"
+              aria-label="Edit"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                viewBox="0 0 20 20"
+                fill="currentColor"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-                </svg>
-              </button>
-            )}
-            {handleDelete && (
-              <button
-                onClick={handleDelete}
-                className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-200"
-                aria-label="Delete"
+                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+              </svg>
+            </button>
+            <button
+              onClick={handleDelete}
+              className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-200"
+              aria-label="Delete"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                viewBox="0 0 20 20"
+                fill="currentColor"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </button>
-            )}
+                <path
+                  fillRule="evenodd"
+                  d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </button>
           </div>
         </div>
 
@@ -137,7 +144,11 @@ const PasswordCard: React.FC<PasswordCardProps> = ({ passwordData }) => {
                 className={`text-zinc-800 px-1 dark:text-zinc-200 rounded-md w-fit ${
                   editcontent ? "border" : ""
                 }`}
-                defaultValue={showPassword ? password.password : "••••••••"}
+                defaultValue={
+                  editcontent || showPassword
+                    ? changes.password || password.password
+                    : "••••••••"
+                }
                 disabled={!editcontent}
                 onChange={(e) =>
                   setChanges({ ...changes, password: e.target.value })
@@ -145,11 +156,12 @@ const PasswordCard: React.FC<PasswordCardProps> = ({ passwordData }) => {
               />
               <button
                 className="ml-2 text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
-                onClick={() => !editcontent && setShowPassword((prev) => !prev)}
+                onClick={toggleShowPassword}
                 disabled={editcontent}
               >
                 {showPassword ? "Hide" : "Show"}
               </button>
+              <button onClick={handleCopy}>Copy</button>
               {editcontent && (
                 <div
                   onClick={handleSave}
