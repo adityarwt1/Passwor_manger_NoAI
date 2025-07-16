@@ -38,7 +38,9 @@ const PasswordCard: React.FC<PasswordCardProps> = ({ passwordData }) => {
       <div className="p-6">
         <div className="flex justify-between items-start mb-4">
           <input
-            className="text-xl font-semibold text-zinc-800 dark:text-zinc-100"
+            className={`text-xl font-semibold text-zinc-800 dark:text-zinc-100 rounded ${
+              editcontent ? "border" : ""
+            }`}
             disabled={editcontent}
             defaultValue={
               password.plateform.length < 10
@@ -98,7 +100,9 @@ const PasswordCard: React.FC<PasswordCardProps> = ({ passwordData }) => {
               onChange={(e) =>
                 setChanges({ ...changes, username: e.target.value })
               }
-              className="text-zinc-800 dark:text-zinc-200 border px-1 w-fit rounded"
+              className={`text-zinc-800 dark:text-zinc-200 px-1 w-fit rounded ${
+                editcontent ? "border" : ""
+              }`}
               defaultValue={password.username || "Not specified"}
               disabled={editcontent}
             />
@@ -108,7 +112,9 @@ const PasswordCard: React.FC<PasswordCardProps> = ({ passwordData }) => {
             <p className="text-sm text-zinc-500 dark:text-zinc-400">Password</p>
             <div className="flex items-center">
               <input
-                className="text-zinc-800 dark:text-zinc-200"
+                className={`text-zinc-800 px-1 dark:text-zinc-200 rounded-md w-fit ${
+                  editcontent ? `border   ` : ""
+                }`}
                 defaultValue={showPassword ? password.password : "••••••••"}
                 disabled={editcontent}
                 onChange={(e) =>
