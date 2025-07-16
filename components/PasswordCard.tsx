@@ -30,7 +30,10 @@ const PasswordCard: React.FC<PasswordCardProps> = ({ passwordData }) => {
       <div className="p-6">
         <div className="flex justify-between items-start mb-4">
           <h3 className="text-xl font-semibold text-zinc-800 dark:text-zinc-100">
-            {passwordData.plateform || "Unknown Platform"}
+            {passwordData.plateform.length < 10
+              ? passwordData.plateform
+              : `${passwordData.plateform.slice(0, 7)}...` ||
+                "Unknown Platform"}
           </h3>
           <div className="flex space-x-2">
             {handleEdit && (
