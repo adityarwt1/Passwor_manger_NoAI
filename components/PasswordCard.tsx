@@ -1,4 +1,5 @@
 "use client";
+import { CopyCheckIcon, CopyIcon, EyeIcon, EyeOffIcon } from "lucide-react";
 import React, { useState } from "react";
 
 interface Password {
@@ -22,6 +23,7 @@ const PasswordCard: React.FC<PasswordCardProps> = ({ passwordData }) => {
     password: "",
   });
   const [saving, setSaving] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const handleEdit = () => {
     // Reset showPassword when entering edit mode
@@ -81,12 +83,24 @@ const PasswordCard: React.FC<PasswordCardProps> = ({ passwordData }) => {
     }
   };
 
+  const handleCopy = async () => {
+    setCopied(true);
+    try {
+      await navigator.clipboard.writeText(password.password);
+      setTimeout(() => {
+        setCopied(false);
+      }, 500);
+    } catch (error) {
+      console.log((error as Error).message);
+    }
+  };
+
   return (
     <div className="bg-zinc-100 rounded-lg shadow-md overflow-hidden transition-all hover:shadow-lg dark:bg-zinc-800 dark:text-white">
       <div className="p-6">
         <div className="flex justify-between items-start mb-4">
           <input
-            className={`text-xl font-semibold text-zinc-800 dark:text-zinc-100 rounded ${
+            className={`text-xl font-semibold text-zinc-800 dark:text-zinc-100 rounded px-1 ${
               editcontent ? "border" : ""
             }`}
             disabled={!editcontent}
@@ -133,6 +147,20 @@ const PasswordCard: React.FC<PasswordCardProps> = ({ passwordData }) => {
                 />
               </svg>
             </button>
+            <button onClick={handleCopy}>
+              {copied ? (
+                <CopyCheckIcon className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-200" />
+              ) : (
+                <CopyIcon className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-200" />
+              )}
+            </button>
+            <button
+              className="ml-2 text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
+              onClick={toggleShowPassword}
+              disabled={editcontent}
+            >
+              {showPassword ? <EyeOffIcon /> : <EyeIcon />}
+            </button>
           </div>
         </div>
 
@@ -154,14 +182,7 @@ const PasswordCard: React.FC<PasswordCardProps> = ({ passwordData }) => {
                   setChanges({ ...changes, password: e.target.value })
                 }
               />
-              <button
-                className="ml-2 text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
-                onClick={toggleShowPassword}
-                disabled={editcontent}
-              >
-                {showPassword ? "Hide" : "Show"}
-              </button>
-              <button onClick={handleCopy}>Copy</button>
+
               {editcontent && (
                 <div
                   onClick={handleSave}
