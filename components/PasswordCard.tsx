@@ -32,9 +32,8 @@ const PasswordCard: React.FC<PasswordCardProps> = ({ passwordData }) => {
         <div className="flex justify-between items-start mb-4">
           <h3 className="text-xl font-semibold text-zinc-800 dark:text-zinc-100">
             {password.plateform.length < 10
-              ? passwordData.plateform
-              : `${passwordData.plateform.slice(0, 7)}...` ||
-                "Unknown Platform"}
+              ? password.plateform
+              : `${password.plateform.slice(0, 7)}...` || "Unknown Platform"}
           </h3>
           <div className="flex space-x-2">
             {handleEdit && (
@@ -80,7 +79,7 @@ const PasswordCard: React.FC<PasswordCardProps> = ({ passwordData }) => {
           <div>
             <p className="text-sm text-zinc-500 dark:text-zinc-400">Username</p>
             <p className="text-zinc-800 dark:text-zinc-200">
-              {passwordData.username || "Not specified"}
+              {password.username || "Not specified"}
             </p>
           </div>
 
@@ -92,7 +91,7 @@ const PasswordCard: React.FC<PasswordCardProps> = ({ passwordData }) => {
                 className="ml-2 text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
                 onClick={() => {
                   // Implement reveal password logic here
-                  alert(`Password: ${passwordData.password}`);
+                  alert(`Password: ${password.password}`);
                 }}
               >
                 Show
