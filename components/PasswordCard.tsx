@@ -28,8 +28,21 @@ const PasswordCard: React.FC<PasswordCardProps> = ({ passwordData }) => {
     // Implement edit logic
   };
 
-  const handleDelete = () => {
-    console.log("Delete:", passwordData);
+  const handleDelete = async () => {
+    try {
+      const response = await fetch("/api/delete", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ _id: password._id }),
+      });
+      if (response.ok) {
+        window.location.href = "/";
+      }
+    } catch (error) {
+      console.log((error as Error).message);
+    }
     // Implement delete logic
   };
 
@@ -47,8 +60,12 @@ const PasswordCard: React.FC<PasswordCardProps> = ({ passwordData }) => {
           password: changes.password,
         }),
       });
+      const data = await response.json();
+      if (response.ok) setPassword(data.update);
     } catch (error) {
+      console.log((error as Error).message);
     } finally {
+      setEditContent(!editcontent);
       setSaving(!saving);
     }
   };
@@ -113,21 +130,6 @@ const PasswordCard: React.FC<PasswordCardProps> = ({ passwordData }) => {
 
         <div className="space-y-3">
           <div>
-            <p className="text-sm text-zinc-500 dark:text-zinc-400">Username</p>
-            <input
-              type="text"
-              onChange={(e) =>
-                setChanges({ ...changes, username: e.target.value })
-              }
-              className={`text-zinc-800 dark:text-zinc-200 px-1 w-fit rounded ${
-                editcontent ? "border" : ""
-              }`}
-              defaultValue={password.username || "Not specified"}
-              disabled={!editcontent}
-            />
-          </div>
-
-          <div>
             <p className="text-sm text-zinc-500 dark:text-zinc-400">Password</p>
             <div className="flex items-center">
               <input
@@ -149,7 +151,10 @@ const PasswordCard: React.FC<PasswordCardProps> = ({ passwordData }) => {
                   {showPassword ? "Hide" : "Show"}
                 </button>
               ) : (
-                <div className="bg-green-500 py-1 px-2 rounded-sm ml-1">
+                <div
+                  onClick={handleSave}
+                  className="bg-green-500 py-1 px-2 rounded-sm ml-1"
+                >
                   {saving ? "Saving..." : "Save"}
                 </div>
               )}
