@@ -67,6 +67,7 @@ const PasswordCard: React.FC<PasswordCardProps> = ({ passwordData }) => {
     } finally {
       setEditContent(!editcontent);
       setSaving(!saving);
+      setShowPassword(false);
     }
   };
   return (
@@ -134,7 +135,7 @@ const PasswordCard: React.FC<PasswordCardProps> = ({ passwordData }) => {
             <div className="flex items-center">
               <input
                 className={`text-zinc-800 px-1 dark:text-zinc-200 rounded-md w-fit ${
-                  editcontent ? `border   ` : ""
+                  editcontent ? "border" : ""
                 }`}
                 defaultValue={showPassword ? password.password : "••••••••"}
                 disabled={!editcontent}
@@ -142,22 +143,13 @@ const PasswordCard: React.FC<PasswordCardProps> = ({ passwordData }) => {
                   setChanges({ ...changes, password: e.target.value })
                 }
               />
-
-              {!editcontent ? (
-                <button
-                  className="ml-2 text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
-                  onClick={() => setShowPassword((prev) => !prev)}
-                >
-                  {showPassword ? "Hide" : "Show"}
-                </button>
-              ) : (
-                <div
-                  onClick={handleSave}
-                  className="bg-green-500 py-1 px-2 rounded-sm ml-1"
-                >
-                  {saving ? "Saving..." : "Save"}
-                </div>
-              )}
+              <button
+                className="ml-2 text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
+                onClick={() => !editcontent && setShowPassword((prev) => !prev)}
+                disabled={editcontent}
+              >
+                {showPassword ? "Hide" : "Show"}
+              </button>
             </div>
           </div>
         </div>
