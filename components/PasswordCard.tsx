@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 // Import your Password model type
 
@@ -14,13 +15,13 @@ interface PasswordCardProps {
 }
 
 const PasswordCard: React.FC<PasswordCardProps> = ({ passwordData }) => {
-  const handleEdit = (data: Password) => {
-    console.log("Edit:", data);
+  const handleEdit = () => {
+    console.log("Edit:", passwordData);
     // Implement edit logic
   };
 
-  const handleDelete = (id: string) => {
-    console.log("Delete:", id);
+  const handleDelete = () => {
+    console.log("Delete:", passwordData);
     // Implement delete logic
   };
 
@@ -34,7 +35,7 @@ const PasswordCard: React.FC<PasswordCardProps> = ({ passwordData }) => {
           <div className="flex space-x-2">
             {handleEdit && (
               <button
-                onClick={() => handleEdit(passwordData)}
+                onClick={handleEdit}
                 className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-200"
                 aria-label="Edit"
               >
@@ -50,9 +51,7 @@ const PasswordCard: React.FC<PasswordCardProps> = ({ passwordData }) => {
             )}
             {handleDelete && (
               <button
-                onClick={() =>
-                  passwordData._id && handleDelete(passwordData._id.toString())
-                }
+                onClick={handleDelete}
                 className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-200"
                 aria-label="Delete"
               >
