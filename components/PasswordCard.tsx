@@ -115,7 +115,6 @@ const PasswordCard: React.FC<PasswordCardProps> = ({ passwordData }) => {
   };
 
   return (
-    <Link href={`/password/${passwordData._id}`}>
       <div className="bg-zinc-100 rounded-lg shadow-md overflow-hidden transition-all hover:shadow-lg dark:bg-zinc-800 dark:text-white w-full max-w-sm mx-auto sm:max-w-none">
         <div className="p-4 sm:p-6">
           <div className="flex justify-between items-start mb-4 gap-2">
@@ -235,7 +234,7 @@ const PasswordCard: React.FC<PasswordCardProps> = ({ passwordData }) => {
           </div>
         </div>
       </div>
-    </Link>
+
   );
 };
 
