@@ -10,6 +10,7 @@ const ParentComponent: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const { user } = useUser();
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
     const fetchPassword = async () => {
@@ -20,12 +21,14 @@ const ParentComponent: React.FC = () => {
       }
       try {
         setLoading(true);
-        const response = await fetch(
-          `/api/fetchPassword?username=${username}`,
-          {
-            method: "POST",
-          }
-        );
+        let url = `/api/fetchPassword?username=${username}`;
+        if (query) {
+          url = `/api/fetchPassword?username=${username}&q=${query}`;
+        }
+
+        const response = await fetch(url, {
+          method: "POST",
+        });
         const data = await response.json();
         if (response.ok) {
           setPasswords(data.password);
@@ -57,6 +60,7 @@ const ParentComponent: React.FC = () => {
 
   return (
     <div className="container mx-auto px-4 py-6 max-w-7xl">
+      <input type="search" onChange={(e) => setQuery(e.target.value)} />
       {passwords.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
           {passwords.map((password) => (

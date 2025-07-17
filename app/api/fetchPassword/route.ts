@@ -6,11 +6,23 @@ export async function POST(req: NextRequest) {
   try {
     await connectDB();
     const username = req.nextUrl.searchParams.get("username");
+    const query = req.nextUrl.searchParams.get("q");
     if (!username) {
       return NextResponse.json({ message: "Bad request" }, { status: 400 });
     }
-
-    const passwords = await Password.find({ username });
+    let filter: any = {};
+    if (username) {
+      filter.username = username;
+    }
+    if (query) {
+      filter.$or = [
+        {
+          plateform: { $regex: query, $options: "i" },
+        },
+        { plateform: { $regex: query, $options: "i" } },
+      ];
+    }
+    const passwords = await Password.find(filter);
     const password = passwords.map((childobject) => {
       const decodedPassword = jwt.verify(childobject.password, username);
       return {
