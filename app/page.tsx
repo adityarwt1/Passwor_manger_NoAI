@@ -11,9 +11,13 @@ const ParentComponent: React.FC = async () => {
     redirect("/signin");
   }
   const username = authData?.username;
-  console.log(username);
   await connectDB();
-  const passwords = await Password.find({ username });
+  const passwords = (await Password.find({ username })).map((doc) => ({
+    _id: doc._id.toString(),
+    plateform: doc.plateform,
+    username: doc.username,
+    password: doc.password,
+  }));
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
