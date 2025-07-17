@@ -18,9 +18,9 @@ const PasswordCard: React.FC<PasswordCardProps> = ({ passwordData }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [editcontent, setEditContent] = useState(false);
   const [changes, setChanges] = useState({
-    plateform: "",
-    username: "",
-    password: "",
+    plateform: passwordData.plateform,
+    username: passwordData.username,
+    password: passwordData.password,
   });
   const [saving, setSaving] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -104,10 +104,12 @@ const PasswordCard: React.FC<PasswordCardProps> = ({ passwordData }) => {
               editcontent ? "border" : ""
             }`}
             disabled={!editcontent}
-            defaultValue={
-              password.plateform.length < 10
+            value={
+              editcontent
+                ? changes.plateform || password.plateform
+                : password.plateform.length < 10
                 ? password.plateform
-                : `${password.plateform.slice(0, 7)}...` || "Unknown Platform"
+                : `${password.plateform.slice(0, 20)}...`
             }
             onChange={(e) => {
               setChanges({ ...changes, plateform: e.target.value });
