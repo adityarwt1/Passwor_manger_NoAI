@@ -31,7 +31,6 @@ export async function POST(req: NextRequest) {
         password: decodedPassword,
       };
     });
-    console.log(password);
     if (!password) {
       return NextResponse.json({ password: [] }, { status: 200 });
     } else {

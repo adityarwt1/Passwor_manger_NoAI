@@ -19,7 +19,7 @@ const HomePage: React.FC = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedQuery(query);
-    }, 500);
+    }, 1000);
     return () => clearTimeout(timer);
   }, [query]);
 
