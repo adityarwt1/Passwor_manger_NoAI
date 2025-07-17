@@ -130,6 +130,10 @@ const PasswordCard: React.FC<PasswordCardProps> = ({ passwordData }) => {
                 setChanges({ ...changes, plateform: e.target.value });
               }}
               placeholder="Platform name"
+              title={password.plateform}
+              onClick={() => {
+                navigator.clipboard.writeText(password.plateform);
+              }}
             />
           </div>
 
