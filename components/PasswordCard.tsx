@@ -95,36 +95,53 @@ const PasswordCard: React.FC<PasswordCardProps> = ({ passwordData }) => {
     }
   };
 
-  return (
-    <div className="bg-zinc-100 rounded-lg shadow-md overflow-hidden transition-all hover:shadow-lg dark:bg-zinc-800 dark:text-white">
-      <div className="p-6">
-        <div className="flex justify-between items-start mb-4">
-          <input
-            className={`text-xl font-semibold text-zinc-800 dark:text-zinc-100 rounded px-1 ${
-              editcontent ? "border" : ""
-            }`}
-            disabled={!editcontent}
-            value={
-              editcontent
-                ? changes.plateform || password.plateform
-                : password.plateform.length < 10
-                ? password.plateform
-                : `${password.plateform.slice(0, 20)}...`
-            }
-            onChange={(e) => {
-              setChanges({ ...changes, plateform: e.target.value });
-            }}
-          />
+  // Function to get display value for password field
+  const getPasswordDisplayValue = () => {
+    if (editcontent) {
+      return changes.password;
+    }
+    return showPassword ? password.password : "••••••••";
+  };
 
-          <div className="flex space-x-2">
+  // Function to get display value for platform field
+  const getPlatformDisplayValue = () => {
+    if (editcontent) {
+      return changes.plateform;
+    }
+    return password.plateform.length > 20
+      ? `${password.plateform.slice(0, 20)}...`
+      : password.plateform;
+  };
+
+  return (
+    <div className="bg-zinc-100 rounded-lg shadow-md overflow-hidden transition-all hover:shadow-lg dark:bg-zinc-800 dark:text-white w-full max-w-sm mx-auto sm:max-w-none">
+      <div className="p-4 sm:p-6">
+        <div className="flex justify-between items-start mb-4 gap-2">
+          <div className="flex-1 min-w-0">
+            <input
+              className={`text-lg sm:text-xl font-semibold text-zinc-800 dark:text-zinc-100 rounded px-1 w-full bg-transparent ${
+                editcontent
+                  ? "border border-zinc-300 dark:border-zinc-600"
+                  : "border-0"
+              }`}
+              disabled={!editcontent}
+              value={getPlatformDisplayValue()}
+              onChange={(e) => {
+                setChanges({ ...changes, plateform: e.target.value });
+              }}
+              placeholder="Platform name"
+            />
+          </div>
+
+          <div className="flex space-x-1 sm:space-x-2 flex-shrink-0">
             <button
               onClick={handleEdit}
-              className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-200"
+              className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-200 p-1"
               aria-label="Edit"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
+                className="h-4 w-4 sm:h-5 sm:w-5"
                 viewBox="0 0 20 20"
                 fill="currentColor"
               >
@@ -133,12 +150,12 @@ const PasswordCard: React.FC<PasswordCardProps> = ({ passwordData }) => {
             </button>
             <button
               onClick={handleDelete}
-              className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-200"
+              className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-200 p-1"
               aria-label="Delete"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
+                className="h-4 w-4 sm:h-5 sm:w-5"
                 viewBox="0 0 20 20"
                 fill="currentColor"
               >
@@ -149,49 +166,61 @@ const PasswordCard: React.FC<PasswordCardProps> = ({ passwordData }) => {
                 />
               </svg>
             </button>
-            <button onClick={handleCopy}>
+            <button
+              onClick={handleCopy}
+              className="p-1"
+              aria-label="Copy password"
+            >
               {copied ? (
-                <CopyCheckIcon className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-200" />
+                <CopyCheckIcon className="h-4 w-4 sm:h-5 sm:w-5 text-green-600 dark:text-green-400" />
               ) : (
-                <CopyIcon className="text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-200" />
+                <CopyIcon className="h-4 w-4 sm:h-5 sm:w-5 text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-200" />
               )}
             </button>
             <button
-              className="ml-2 text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
+              className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 p-1"
               onClick={toggleShowPassword}
               disabled={editcontent}
+              aria-label={showPassword ? "Hide password" : "Show password"}
             >
-              {showPassword ? <EyeOffIcon /> : <EyeIcon />}
+              {showPassword ? (
+                <EyeOffIcon className="h-4 w-4 sm:h-5 sm:w-5" />
+              ) : (
+                <EyeIcon className="h-4 w-4 sm:h-5 sm:w-5" />
+              )}
             </button>
           </div>
         </div>
 
         <div className="space-y-3">
           <div>
-            <p className="text-sm text-zinc-500 dark:text-zinc-400">Password</p>
-            <div className="flex items-center">
+            <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-1">
+              Password
+            </p>
+            <div className="flex items-center gap-2">
               <input
-                className={`text-zinc-800 px-1 dark:text-zinc-200 rounded-md w-fit ${
-                  editcontent ? "border" : ""
+                className={`text-zinc-800 px-2 py-1 dark:text-zinc-200 rounded-md flex-1 min-w-0 ${
+                  editcontent
+                    ? "border border-zinc-300 dark:border-zinc-600"
+                    : "bg-transparent border-0"
                 }`}
-                defaultValue={
-                  editcontent || showPassword
-                    ? changes.password || password.password
-                    : "••••••••"
-                }
+                value={getPasswordDisplayValue()}
                 disabled={!editcontent}
                 onChange={(e) =>
                   setChanges({ ...changes, password: e.target.value })
                 }
+                placeholder="Password"
+                type={editcontent ? "text" : showPassword ? "text" : "password"}
               />
 
               {editcontent && (
-                <div
+                <button
                   onClick={handleSave}
-                  className="bg-green-500 py-1 px-2 rounded-sm ml-1 cursor-pointer"
+                  disabled={saving}
+                  className="bg-green-500 hover:bg-green-600 disabled:bg-green-400 text-white py-1 px-3 rounded-sm text-sm font-medium transition-colors flex-shrink-0"
                 >
                   {saving ? "Saving..." : "Save"}
-                </div>
+                </button>
               )}
             </div>
           </div>

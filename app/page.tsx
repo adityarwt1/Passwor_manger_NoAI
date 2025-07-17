@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 
 const ParentComponent: React.FC = () => {
   const [passwords, setPasswords] = useState<Password[]>([]);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
   const { user } = useUser();
 
@@ -18,6 +19,7 @@ const ParentComponent: React.FC = () => {
         return;
       }
       try {
+        setLoading(true);
         const response = await fetch(
           `/api/fetchPassword?username=${username}`,
           {
@@ -32,23 +34,49 @@ const ParentComponent: React.FC = () => {
         }
       } catch (error) {
         console.log((error as Error).message);
+        setPasswords([]);
+      } finally {
+        setLoading(false);
       }
     };
     fetchPassword();
   }, [user, router]);
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[50vh] p-4">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-zinc-600 dark:text-zinc-400">
+            Loading passwords...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
+    <div className="container mx-auto px-4 py-6 max-w-7xl">
       {passwords.length > 0 ? (
-        passwords.map((password) => (
-          <PasswordCard
-            key={password._id?.toString()}
-            passwordData={password}
-          />
-        ))
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+          {passwords.map((password) => (
+            <PasswordCard
+              key={password._id?.toString()}
+              passwordData={password}
+            />
+          ))}
+        </div>
       ) : (
-        <div className="flex ">
-          <div>No password added.....</div>
+        <div className="flex items-center justify-center min-h-[50vh]">
+          <div className="text-center p-8 bg-zinc-100 dark:bg-zinc-800 rounded-lg shadow-md">
+            <div className="text-4xl mb-4">🔒</div>
+            <h3 className="text-xl font-semibold text-zinc-800 dark:text-zinc-200 mb-2">
+              No passwords found
+            </h3>
+            <p className="text-zinc-600 dark:text-zinc-400">
+              Start by adding your first password to get started.
+            </p>
+          </div>
         </div>
       )}
     </div>
