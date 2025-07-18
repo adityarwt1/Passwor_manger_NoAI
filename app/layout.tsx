@@ -53,7 +53,7 @@ export default function RootLayout({
             <Link rel="manifest" href="/site.webmanifest" />
 
             {/* Preload Critical Resources */}
-          </Head>
+          </Head>          
           <body>
             <div className="min-h-screen flex flex-col">
               <Navbar />
