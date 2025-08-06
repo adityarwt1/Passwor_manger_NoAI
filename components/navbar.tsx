@@ -20,7 +20,6 @@ const Navbar = () => {
   const navItems = [
     { href: "/", label: "Dashboard" },
     { href: "/generator", label: "Password Generator" },
-    { href: "/help", label: "Help & Support" },
     { href: "/add", label: "Add Password" },
   ];
 
