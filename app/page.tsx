@@ -1,9 +1,24 @@
 "use client";
+
 import React, { useEffect, useState, useCallback } from "react";
 import PasswordCard from "@/components/PasswordCard";
 import { Password } from "@/types/Password";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
+import {
+  Search,
+  Filter,
+  Plus,
+  SortAsc,
+  SortDesc,
+  Grid3X3,
+  List,
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
+} from "lucide-react";
+import Link from "next/link";
 
 interface PaginationInfo {
   currentPage: number;
@@ -27,7 +42,6 @@ const HomePage: React.FC = () => {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [pagination, setPagination] = useState<PaginationInfo | null>(null);
   const [error, setError] = useState<string | null>(null);
-
   const router = useRouter();
   const { user } = useUser();
 
@@ -35,7 +49,7 @@ const HomePage: React.FC = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedQuery(query);
-      setPage(0); // Reset to first page when searching
+      setPage(0);
     }, 500);
     return () => clearTimeout(timer);
   }, [query]);
@@ -47,10 +61,8 @@ const HomePage: React.FC = () => {
       router.push("/signin");
       return;
     }
-
     setLoading(true);
     setError(null);
-
     try {
       const params = new URLSearchParams({
         username,
@@ -59,17 +71,13 @@ const HomePage: React.FC = () => {
         sortBy,
         sortOrder,
       });
-
       if (debouncedQuery) {
         params.append("q", debouncedQuery);
       }
-
       const response = await fetch(`/api/fetchPassword?${params}`, {
         method: "POST",
       });
-
       const data = await response.json();
-
       if (response.ok) {
         setPasswords(data.passwords || []);
         setPagination(data.pagination);
@@ -97,15 +105,26 @@ const HomePage: React.FC = () => {
     }
   };
 
-  const goToFirstPage = () => goToPage(0);
-  const goToLastPage = () => goToPage((pagination?.totalPages || 1) - 1);
-  const goToPreviousPage = () => goToPage(page - 1);
-  const goToNextPage = () => goToPage(page + 1);
+  // Sort handler
+  const handleSort = (field: string) => {
+    if (sortBy === field) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      setSortBy(field);
+      setSortOrder("asc");
+    }
+    setPage(0);
+  };
+
+  // Clear search
+  const clearSearch = () => {
+    setQuery("");
+    setPage(0);
+  };
 
   // Generate page numbers for pagination
   const generatePageNumbers = () => {
     if (!pagination) return [];
-
     const { currentPage, totalPages } = pagination;
     const delta = 2;
     const range = [];
@@ -134,260 +153,281 @@ const HomePage: React.FC = () => {
     return rangeWithDots;
   };
 
-  // Sort handler
-  const handleSort = (field: string) => {
-    if (sortBy === field) {
-      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
-    } else {
-      setSortBy(field);
-      setSortOrder("asc");
-    }
-    setPage(0);
-  };
-
-  // Clear search
-  const clearSearch = () => {
-    setQuery("");
-    setPage(0);
-  };
-
-  // Loading state
-  if (loading && page === 0) {
-    return (
-      <div className="flex items-center justify-center min-h-[50vh] p-4">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-zinc-600 dark:text-zinc-400">
-            Loading passwords...
-          </p>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="container mx-auto px-4 py-6 max-w-7xl">
-      {/* Search and Controls */}
-      <div className="mb-6 space-y-4">
-        <div className="flex flex-col md:flex-row gap-4 items-center">
-          <div className="relative flex-1 max-w-md">
-            <input
-              type="search"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search passwords..."
-              className="w-full px-4 py-2 border text-white border-zinc-300 dark:border-zinc-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-zinc-800"
-              autoComplete="off"
-            />
-            {query && (
-              <button
-                onClick={clearSearch}
-                className="absolute right-2 top-2 text-zinc-400 hover:text-zinc-600"
-                type="button"
-                tabIndex={-1}
-              >
-                ✕
-              </button>
-            )}
-          </div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+      {/* Header Section */}
+      <div className="bg-white/80 backdrop-blur-sm border-b border-slate-200/60">
+        <div className="container mx-auto px-6 py-8">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+            <div>
+              <h1 className="text-3xl font-bold text-slate-900 mb-2">
+                Password Manager
+              </h1>
+              <p className="text-slate-600">
+                Manage and secure all your passwords in one place
+              </p>
+            </div>
 
-          <div className="flex gap-2">
-            <select
-              value={limit}
-              onChange={(e) => {
-                setLimit(Number(e.target.value));
-                setPage(0);
-              }}
-              className="px-3 py-2 border text-white border-zinc-300 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800"
+            <Link
+              href="/add"
+              className="inline-flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-slate-900 to-slate-800 text-white font-semibold rounded-xl hover:from-slate-800 hover:to-slate-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
             >
-              <option value={5}>5 per page</option>
-              <option value={10}>10 per page</option>
-              <option value={20}>20 per page</option>
-              <option value={50}>50 per page</option>
-            </select>
+              <Plus className="w-5 h-5" />
+              <span>Add Password</span>
+            </Link>
           </div>
-        </div>
-
-        {/* Sort Controls */}
-        <div className="flex gap-2 flex-wrap">
-          <button
-            onClick={() => handleSort("plateform")}
-            className={`px-3 py-1 rounded-lg border text-sm text-white ${
-              sortBy === "plateform"
-                ? "bg-blue-500 text-white border-blue-500"
-                : "bg-white dark:bg-zinc-800 border-zinc-300 dark:border-zinc-700"
-            }`}
-          >
-            Platform{" "}
-            {sortBy === "plateform" && (sortOrder === "asc" ? "↑" : "↓")}
-          </button>
-          <button
-            onClick={() => handleSort("createdAt")}
-            className={`px-3 py-1 rounded-lg border text-sm text-white ${
-              sortBy === "createdAt"
-                ? "bg-blue-500 text-white border-blue-500"
-                : "bg-white dark:bg-zinc-800 border-zinc-300 dark:border-zinc-700"
-            }`}
-          >
-            Created{" "}
-            {sortBy === "createdAt" && (sortOrder === "asc" ? "↑" : "↓")}
-          </button>
         </div>
       </div>
 
-      {/* Error State */}
-      {error && (
-        <div className="mb-4 p-4 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 rounded-lg">
-          {error}
-        </div>
-      )}
-
-      {/* Results Info */}
-      {pagination && (
-        <div className="mb-4 text-sm text-zinc-600 dark:text-zinc-400">
-          Showing {pagination.currentPage * pagination.limit + 1} to{" "}
-          {Math.min(
-            (pagination.currentPage + 1) * pagination.limit,
-            pagination.totalCount
-          )}{" "}
-          of {pagination.totalCount} passwords
-          {query && ` for "${query}"`}
-        </div>
-      )}
-
-      {/* Password Grid */}
-      {passwords.length > 0 ? (
-        <>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 mb-8">
-            {passwords.map((password) => (
-              <PasswordCard
-                key={password._id?.toString()}
-                passwordData={password}
-              />
-            ))}
-          </div>
-
-          {/* Advanced Pagination */}
-          {pagination && pagination.totalPages > 1 && (
-            <div className="flex flex-col items-center space-y-4">
-              {/* Main Pagination Controls */}
-              <div className="flex items-center space-x-2">
-                <button
-                  onClick={goToFirstPage}
-                  disabled={!pagination.hasPreviousPage}
-                  className="px-3 py-2 text-sm rounded-lg border border-zinc-300 dark:border-zinc-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-zinc-100 dark:hover:bg-zinc-800"
-                >
-                  First
-                </button>
-
-                <button
-                  onClick={goToPreviousPage}
-                  disabled={!pagination.hasPreviousPage}
-                  className="px-3 py-2 text-sm rounded-lg border border-zinc-300 dark:border-zinc-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-zinc-100 dark:hover:bg-zinc-800"
-                >
-                  Previous
-                </button>
-
-                {/* Page Numbers */}
-                <div className="flex items-center space-x-1">
-                  {generatePageNumbers().map((pageNum, index) => (
-                    <React.Fragment key={index}>
-                      {pageNum === "..." ? (
-                        <span className="px-2 py-1 text-zinc-500">...</span>
-                      ) : (
-                        <button
-                          onClick={() => goToPage(pageNum as number)}
-                          className={`px-3 py-2 text-sm rounded-lg border ${
-                            pageNum === pagination.currentPage
-                              ? "bg-blue-500 text-white border-blue-500"
-                              : "border-zinc-300 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800"
-                          }`}
-                        >
-                          {(pageNum as number) + 1}
-                        </button>
-                      )}
-                    </React.Fragment>
-                  ))}
-                </div>
-
-                <button
-                  onClick={goToNextPage}
-                  disabled={!pagination.hasNextPage}
-                  className="px-3 py-2 text-sm rounded-lg border border-zinc-300 dark:border-zinc-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-zinc-100 dark:hover:bg-zinc-800"
-                >
-                  Next
-                </button>
-
-                <button
-                  onClick={goToLastPage}
-                  disabled={!pagination.hasNextPage}
-                  className="px-3 py-2 text-sm rounded-lg border border-zinc-300 dark:border-zinc-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-zinc-100 dark:hover:bg-zinc-800"
-                >
-                  Last
-                </button>
-              </div>
-
-              {/* Jump to Page */}
-              <div className="flex items-center space-x-2 text-sm">
-                <span className="text-zinc-600 dark:text-zinc-400">
-                  Jump to page:
-                </span>
+      {/* Main Content */}
+      <div className="container mx-auto px-6 py-8">
+        {/* Search and Filter Controls */}
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-8">
+          <div className="flex flex-col lg:flex-row gap-4">
+            {/* Search Bar */}
+            <div className="flex-1">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
                 <input
-                  type="number"
-                  min="1"
-                  max={pagination.totalPages}
-                  placeholder={(pagination.currentPage + 1).toString()}
-                  className="w-16 px-2 py-1 text-white border border-zinc-300 dark:border-zinc-700 rounded text-center bg-white dark:bg-zinc-800"
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      const targetPage = parseInt(e.currentTarget.value) - 1;
-                      if (
-                        targetPage >= 0 &&
-                        targetPage < pagination.totalPages
-                      ) {
-                        goToPage(targetPage);
-                        e.currentTarget.value = "";
-                      }
-                    }
-                  }}
+                  type="search"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Search passwords by platform or username..."
+                  className="w-full pl-11 pr-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-slate-900 focus:border-transparent transition-all duration-200 text-slate-900 placeholder-slate-500"
+                  autoComplete="off"
                 />
-                <span className="text-zinc-600 dark:text-zinc-400">
-                  of {pagination.totalPages}
-                </span>
+                {query && (
+                  <button
+                    onClick={clearSearch}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors duration-200"
+                  >
+                    ×
+                  </button>
+                )}
               </div>
             </div>
-          )}
-        </>
-      ) : (
-        <div className="flex items-center justify-center min-h-[50vh]">
-          <div className="text-center p-8 bg-zinc-100 dark:bg-zinc-800 rounded-lg shadow-md">
-            <div className="text-4xl mb-4">{query ? "🔍" : "🔒"}</div>
-            <h3 className="text-xl font-semibold text-zinc-800 dark:text-zinc-200 mb-2">
-              {query ? "No passwords found" : "No passwords found"}
-            </h3>
-            <p className="text-zinc-600 dark:text-zinc-400">
-              {query
-                ? `No passwords match "${query}". Try a different search term.`
-                : "Start by adding your first password to get started."}
-            </p>
-            {query && (
-              <button
-                onClick={clearSearch}
-                className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-              >
-                Clear Search
-              </button>
-            )}
-          </div>
-        </div>
-      )}
 
-      {/* Loading overlay for page changes */}
+            {/* Sort and Filter Controls */}
+            <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-2">
+                <Filter className="w-4 h-4 text-slate-500" />
+                <select
+                  value={limit}
+                  onChange={(e) => {
+                    setLimit(Number(e.target.value));
+                    setPage(0);
+                  }}
+                  className="px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-900 focus:border-transparent text-slate-900"
+                >
+                  <option value={5}>5 per page</option>
+                  <option value={10}>10 per page</option>
+                  <option value={20}>20 per page</option>
+                  <option value={50}>50 per page</option>
+                </select>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={() => handleSort("plateform")}
+                  className={`flex items-center space-x-1 px-3 py-2 rounded-lg border transition-all duration-200 ${
+                    sortBy === "plateform"
+                      ? "bg-slate-900 text-white border-slate-900"
+                      : "bg-white text-slate-700 border-slate-300 hover:border-slate-400"
+                  }`}
+                >
+                  <span>Platform</span>
+                  {sortBy === "plateform" &&
+                    (sortOrder === "asc" ? (
+                      <SortAsc className="w-4 h-4" />
+                    ) : (
+                      <SortDesc className="w-4 h-4" />
+                    ))}
+                </button>
+
+                <button
+                  onClick={() => handleSort("createdAt")}
+                  className={`flex items-center space-x-1 px-3 py-2 rounded-lg border transition-all duration-200 ${
+                    sortBy === "createdAt"
+                      ? "bg-slate-900 text-white border-slate-900"
+                      : "bg-white text-slate-700 border-slate-300 hover:border-slate-400"
+                  }`}
+                >
+                  <span>Date</span>
+                  {sortBy === "createdAt" &&
+                    (sortOrder === "asc" ? (
+                      <SortAsc className="w-4 h-4" />
+                    ) : (
+                      <SortDesc className="w-4 h-4" />
+                    ))}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Results Info */}
+          {pagination && (
+            <div className="mt-4 pt-4 border-t border-slate-200 text-sm text-slate-600">
+              Showing {pagination.currentPage * pagination.limit + 1} to{" "}
+              {Math.min(
+                (pagination.currentPage + 1) * pagination.limit,
+                pagination.totalCount
+              )}{" "}
+              of {pagination.totalCount} passwords
+              {query && ` matching "${query}"`}
+            </div>
+          )}
+        </div>
+
+        {/* Error State */}
+        {error && (
+          <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-6">
+            <p className="text-red-700">{error}</p>
+          </div>
+        )}
+
+        {/* Loading State */}
+        {loading && page === 0 ? (
+          <div className="flex items-center justify-center py-16">
+            <div className="text-center">
+              <div className="w-12 h-12 border-4 border-slate-200 border-t-slate-900 rounded-full animate-spin mx-auto mb-4"></div>
+              <p className="text-slate-600">Loading passwords...</p>
+            </div>
+          </div>
+        ) : passwords.length > 0 ? (
+          <>
+            {/* Password List */}
+            <div className="space-y-4 mb-8">
+              {passwords.map((password) => (
+                <PasswordCard
+                  key={password._id?.toString()}
+                  passwordData={password}
+                />
+              ))}
+            </div>
+
+            {/* Pagination */}
+            {pagination && pagination.totalPages > 1 && (
+              <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                  {/* Page Info */}
+                  <div className="text-sm text-slate-600">
+                    Page {pagination.currentPage + 1} of {pagination.totalPages}
+                  </div>
+
+                  {/* Pagination Controls */}
+                  <div className="flex items-center space-x-2">
+                    <button
+                      onClick={() => goToPage(0)}
+                      disabled={!pagination.hasPreviousPage}
+                      className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                      title="First page"
+                    >
+                      <ChevronsLeft className="w-4 h-4" />
+                    </button>
+
+                    <button
+                      onClick={() => goToPage(page - 1)}
+                      disabled={!pagination.hasPreviousPage}
+                      className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                      title="Previous page"
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                    </button>
+
+                    {/* Page Numbers */}
+                    <div className="flex items-center space-x-1">
+                      {generatePageNumbers().map((pageNum, index) => (
+                        <React.Fragment key={index}>
+                          {pageNum === "..." ? (
+                            <span className="px-2 py-1 text-slate-500">
+                              ...
+                            </span>
+                          ) : (
+                            <button
+                              onClick={() => goToPage(pageNum as number)}
+                              className={`px-3 py-2 text-sm rounded-lg transition-all duration-200 ${
+                                pageNum === pagination.currentPage
+                                  ? "bg-slate-900 text-white"
+                                  : "text-slate-700 hover:bg-slate-100"
+                              }`}
+                            >
+                              {(pageNum as number) + 1}
+                            </button>
+                          )}
+                        </React.Fragment>
+                      ))}
+                    </div>
+
+                    <button
+                      onClick={() => goToPage(page + 1)}
+                      disabled={!pagination.hasNextPage}
+                      className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                      title="Next page"
+                    >
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+
+                    <button
+                      onClick={() =>
+                        goToPage((pagination?.totalPages || 1) - 1)
+                      }
+                      disabled={!pagination.hasNextPage}
+                      className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                      title="Last page"
+                    >
+                      <ChevronsRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </>
+        ) : (
+          /* Empty State */
+          <div className="flex items-center justify-center py-16">
+            <div className="text-center max-w-md">
+              <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                {query ? (
+                  <Search className="w-8 h-8 text-slate-400" />
+                ) : (
+                  <List className="w-8 h-8 text-slate-400" />
+                )}
+              </div>
+              <h3 className="text-xl font-semibold text-slate-900 mb-2">
+                {query ? "No passwords found" : "No passwords yet"}
+              </h3>
+              <p className="text-slate-600 mb-6">
+                {query
+                  ? `No passwords match "${query}". Try adjusting your search.`
+                  : "Start by adding your first password to get started."}
+              </p>
+              {query ? (
+                <button
+                  onClick={clearSearch}
+                  className="px-4 py-2 bg-slate-900 text-white rounded-lg hover:bg-slate-800 transition-colors duration-200"
+                >
+                  Clear Search
+                </button>
+              ) : (
+                <Link
+                  href="/add"
+                  className="inline-flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-slate-900 to-slate-800 text-white font-semibold rounded-xl hover:from-slate-800 hover:to-slate-700 transition-all duration-200 shadow-lg hover:shadow-xl"
+                >
+                  <Plus className="w-5 h-5" />
+                  <span>Add Your First Password</span>
+                </Link>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Loading Overlay */}
       {loading && page > 0 && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-zinc-800 p-4 rounded-lg">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-2"></div>
-            <p className="text-zinc-600 dark:text-zinc-400">Loading...</p>
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl p-6 shadow-xl">
+            <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-900 rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-slate-600">Loading...</p>
           </div>
         </div>
       )}
