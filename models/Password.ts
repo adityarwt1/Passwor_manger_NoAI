@@ -6,17 +6,20 @@ interface Password extends Document {
   password: string;
 }
 
-const PasswordSchema: Schema<Password> = new Schema({
-  username: {
-    type: String,
+const PasswordSchema: Schema<Password> = new Schema(
+  {
+    username: {
+      type: String,
+    },
+    plateform: {
+      type: String,
+    },
+    password: {
+      type: String,
+    },
   },
-  plateform: {
-    type: String,
-  },
-  password: {
-    type: String,
-  },
-});
+  { timestamps: true }
+);
 
 const Password =
   mongoose.models.Password ||
