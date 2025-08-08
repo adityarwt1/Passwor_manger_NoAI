@@ -2,6 +2,8 @@ import connectDB from "@/lib/mongodb";
 import Password from "@/models/Password";
 import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
+
+
 export async function POST(req: NextRequest) {
   try {
     await connectDB();
