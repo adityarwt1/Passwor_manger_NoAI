@@ -11,7 +11,6 @@ import {
   Plus,
   SortAsc,
   SortDesc,
-  Grid3X3,
   List,
   ChevronLeft,
   ChevronRight,
