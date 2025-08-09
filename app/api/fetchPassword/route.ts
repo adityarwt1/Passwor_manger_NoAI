@@ -63,10 +63,7 @@ export async function POST(req: NextRequest) {
     const totalPages = Math.ceil(totalCount / limit);
 
     // Fetch passwords with pagination
-    const passwords = await Password.find(filter)
-      .sort(sort)
-      .skip(page * limit)
-      .limit(limit);
+    const passwords = await Password.find(filter).sort(sort);
 
     // Decrypt passwords
     const decryptedPasswords = passwords.map((doc) => {
