@@ -11,8 +11,15 @@ export async function GET() {
     // If no token is found, return unauthorized response
     if (!token) {
       return NextResponse.json(
-        { success: false, message: 'Unauthorized: No token provided' },
-        { status: 401 }
+        { success: false, message: "Unauthorized: No token provided" },
+        {
+          status: 401,
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "POST",
+            "Access-Control-Allow-Headers": "Content-Type, Authorization",
+          },
+        }
       );
     }
 
@@ -20,12 +27,29 @@ export async function GET() {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     // Return the decoded user information
-    return NextResponse.json({ success: true, data: decoded });
+    return NextResponse.json(
+      { success: true, data: decoded },
+      {
+        status: 200,
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "POST",
+          "Access-Control-Allow-Headers": "Content-Type, Authorization",
+        },
+      }
+    );
   } catch (error) {
     // Handle token verification errors
     return NextResponse.json(
-      { success: false, message: 'Invalid or expired token' },
-      { status: 401 }
+      { success: false, message: "Invalid or expired token" },
+      {
+        status: 500,
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "POST",
+          "Access-Control-Allow-Headers": "Content-Type, Authorization",
+        },
+      }
     );
   }
 }
