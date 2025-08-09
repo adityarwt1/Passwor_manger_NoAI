@@ -8,7 +8,17 @@ export async function PUT(req: NextRequest) {
     const { _id, plateform, password } = await req.json();
 
     if (!_id || !plateform || !password) {
-      return NextResponse.json({ message: "bad request" }, { status: 400 });
+      return NextResponse.json(
+        { message: "bad request" },
+        {
+          status: 400,
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "POST",
+            "Access-Control-Allow-Headers": "Content-Type, Authorization",
+          },
+        }
+      );
     }
 
     const update = await Password.findOneAndUpdate(
@@ -20,19 +30,40 @@ export async function PUT(req: NextRequest) {
     if (!update) {
       return NextResponse.json(
         { message: "Unable to update the password" },
-        { status: 404 }
+        {
+          status: 404,
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "POST",
+            "Access-Control-Allow-Headers": "Content-Type, Authorization",
+          },
+        }
       );
     }
 
     return NextResponse.json(
       { message: "Password updated successfully", update },
-      { status: 200 }
+      {
+        status: 200,
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "POST",
+          "Access-Control-Allow-Headers": "Content-Type, Authorization",
+        },
+      }
     );
   } catch (error) {
     console.log((error as Error).message);
     return NextResponse.json(
       { message: (error as Error).message },
-      { status: 500 }
+      {
+        status: 500,
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "POST",
+          "Access-Control-Allow-Headers": "Content-Type, Authorization",
+        },
+      }
     );
   }
 }
